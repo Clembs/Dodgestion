@@ -1,0 +1,79 @@
+/* Styles CSS initiaux pour retirer certains comportements de navigateur par défaut indésirables */
+
+*,
+*::after,
+*::before {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: sans-serif;
+  line-height: 1.5;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+input,
+textarea,
+button,
+select {
+  font: inherit;
+  font-size: 1rem;
+}
+
+img,
+svg,
+video,
+iframe,
+picture,
+canvas {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  flex-shrink: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  overflow-wrap: break-word;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.heading {
+  font-weight: 500;
+  color: var(--color-heading);
+}
+
+.darken {
+  color: var(--color-heading);
+}
+
+p,
+.subtext {
+  font-size: 15px;
+  color: var(--color-paragraph);
+}
+
+a {
+  color: inherit;
+}
+
+code,
+pre {
+  font-size: 1rem;
+}
