@@ -6,7 +6,7 @@ enum EtatJoueur: string {
     case SUSPENDU = "Suspendu";
     case RETRAITE = "Absent";
 }
-class Joueur {
+class joueur {
 
     const DESC = "Cette classe permet de définir un joueur";
 
@@ -62,5 +62,44 @@ class Joueur {
     public function getEtat(){
         return $this->Etat;
     }
+
+    public function insertionJoueur(){
+        try{
+            $linkpdo = new PDO("mysql:host= ; dbname=", $login, $mdp) ;
+        }
+        catch(Exception $e){
+            die('Erreur: '. $e->getMessage());
+        }
+        $req= $linkpdo->prepare('INSERT INTO joueur(nom, prenom, numerolicence, datenaissance, taille, poids, etat) VALUES(:nom, :prenom, :numerolicence, :datenaissance, :taille, :poids, :etat)'); 
+
+        $req->execute(array(
+            'nom'=>$this->getNom(),
+            'prenom'=>$this->getPrenom(),
+            'numerolicence'=>$this->getNumeroLicence(),
+            'datenaissance'=> $this->getDateNaissance(),
+            'taille'=> $this->getTaille(),
+            'poids'=>$this->getPoids(),
+            'etat'=>$this->getEtat()
+        ));
+    }
+
+    public function readJoueur(){
+        try{
+            $linkpdo = new PDO("mysql:host= ; dbname=", $login, $mdp) ;
+        }
+        catch(Exception $e){
+            die('Erreur: '. $e->getMessage());
+        }
+        $req= $linkpdo->prepare('SELECT nom, prenom, numerolicence, datenaissance, taille, poids FROM  joueur WHERE numerolicence = :numlicence '); 
+
+        $req->execute(array(
+            'numerolicence'=>$this->getNumeroLicence()
+        ));
+        $joueur = $req->fetch(PDO::FETCH_ASSOC);
+    }
+
+
 }
+
+
 ?>
