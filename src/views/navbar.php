@@ -15,10 +15,10 @@ $pages = [
     (logo ici)
 
     <ul>
-      <?php foreach ($pages as $url => $title): ?>
+      <?php foreach ($pages as $url => $pageTitle): ?>
         <li>
           <a href="/?page=<?= $url ?>" aria-current="<?= $url === $page ? 'page' : 'false' ?>">
-            <?= $title ?>
+            <?= $pageTitle ?>
           </a>
         </li>
       <?php endforeach; ?>
