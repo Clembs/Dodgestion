@@ -1,4 +1,11 @@
 <?php
+// Definition de l'enum pour l'etat du joueur
+enum EtatJoueur: string {
+    case ACTIF = "Actif";
+    case BLESSE = "Blessé";
+    case SUSPENDU = "Suspendu";
+    case RETRAITE = "Absent";
+}
 class Joueur {
 
     const DESC = "Cette classe permet de définir un joueur";
@@ -9,15 +16,17 @@ class Joueur {
     private string $DateNaissance; 
     private float $Taille; 
     private float $Poids; 
+    private EtatJoueur $Etat;
     
     // Constructeur
-    public function __construct(string $Nom, string $Prenom, string $NumeroLicence, string $DateNaissance, float $Taille, float $Poids) {
+    public function __construct(string $Nom, string $Prenom, string $NumeroLicence, string $DateNaissance, float $Taille, float $Poids, EtatJoueur $Etat) {
         $this->Nom = $Nom;
         $this->Prenom = $Prenom;
         $this->NumeroLicence = $NumeroLicence;
         $this->DateNaissance = $DateNaissance;
         $this->Taille = $Taille;
         $this->Poids = $Poids;
+        $this->Etat = $Etat;
     }
 
     // Destructeur
@@ -48,6 +57,10 @@ class Joueur {
 
     public function getPoids(): float {
         return $this->Poids;
+    }
+
+    public function getEtat(){
+        return $this->Etat;
     }
 }
 ?>
