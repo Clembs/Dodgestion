@@ -59,4 +59,4 @@ $pages = [
     color: var(--color-background);
   }
 </style>
-<?php $head = isset($head) ? $head . ob_get_clean() : $head; ?>
+<?php $head = isset($head) ? $head . ob_get_clean() : ob_get_clean(); ?>

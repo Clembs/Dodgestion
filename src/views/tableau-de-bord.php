@@ -23,6 +23,6 @@
     padding: 1rem;
   }
 </style>
-<?php $head = isset($head) ? $head . ob_get_clean() : $head; ?>
+<?php $head = isset($head) ? $head . ob_get_clean() : ob_get_clean(); ?>
 
 <?php require 'layout.php'; ?>
