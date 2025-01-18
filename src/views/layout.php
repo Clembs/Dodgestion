@@ -19,7 +19,7 @@ $completeTitle = "Gestion sportive | $title";
   <!-- Chargement de la police d'écriture -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@400..600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@400..700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles/globals.css" />
 
   <!-- Ajout des tags méta, de l'OpenGraph, du titre, etc (le SEO) -->
