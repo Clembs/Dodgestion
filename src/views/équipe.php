@@ -46,11 +46,11 @@ $joueurSélectionné = $joueurs[$_GET['joueur'] ?? '123456'];
           <a class="joueur" href="?page=équipe&joueur=<?= $id ?>"
             aria-current="<?= $joueurSélectionné === $joueur ? 'page' : 'false' ?>">
             <img width="48" height="48" src="<?= $joueur['photo'] ?>"
-              alt="Photo de <?= $joueur['nom'] ?> <?= $joueur['prenom'] ?>" />
+              alt="Photo de  <?= $joueur['prenom'] ?> <?= $joueur['nom'] ?>" />
 
             <div class="text">
               <div class="player-name">
-                <?= $joueur['nom'] ?>   <?= $joueur['prenom'] ?>
+                <?= $joueur['prenom'] ?>   <?= $joueur['nom'] ?>
               </div>
 
               <div class="subtext player-status <?= strtolower($joueur['status']) ?>">
@@ -72,7 +72,7 @@ $joueurSélectionné = $joueurs[$_GET['joueur'] ?? '123456'];
   <!-- Informations sur le joueur sélectionné -->
   <div class="surface" id="infos-joueur">
     <div id="infos-joueur-header">
-      <h2> <?= $joueurSélectionné['nom'] ?> <?= $joueurSélectionné['prenom'] ?> </h2>
+      <h2> <?= $joueurSélectionné['prenom'] ?> <?= $joueurSélectionné['nom'] ?> </h2>
       <p class="subtext">
         Numéro de licence : <?= $joueurSélectionné['licence'] ?>
       </p>
