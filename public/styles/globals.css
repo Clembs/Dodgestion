@@ -34,6 +34,11 @@ body {
   line-height: 1.5;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+
   background-image: radial-gradient(
     100% 100% at 70% 100%,
     #3f5d2d 0%,
