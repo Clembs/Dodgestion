@@ -12,7 +12,7 @@
   <aside>
     <h1> Mon équipe </h1>
 
-    <div id="recherche-joueur">
+    <div class="input" id="recherche-joueur">
       <input type="text" placeholder="Rechercher un joueur" />
     </div>
 
@@ -138,12 +138,6 @@
     font-size: 3rem;
     font-weight: 700;
     margin: 0;
-  }
-
-  aside input {
-    width: 100%;
-    padding: 0.5rem;
-    margin-bottom: 1rem;
   }
 
   #liste-joueurs {
