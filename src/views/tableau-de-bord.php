@@ -15,7 +15,7 @@
 
 <?php ob_start(); ?>
 <!-- Ajout des balises meta -->
-<meta name="description" content="Tableau de bord de l'application de gestion sportive" />
+<meta name="description" content="Une application de gestion de dodgeball" />
 
 <!-- CSS -->
 <style data-file="tableau-de-bord">

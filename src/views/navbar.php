@@ -12,7 +12,9 @@ $pages = [
 <?php ob_start(); ?>
 <header>
   <nav>
-    (logo ici)
+    <div id="navbar-title">
+      Dodgestion
+    </div>
 
     <ul>
       <?php foreach ($pages as $url => $pageTitle): ?>
@@ -30,8 +32,9 @@ $pages = [
 
 <?php ob_start(); ?>
 <style data-file="navbar">
-  nav {
+  header nav {
     padding: 1.5rem;
+    padding-left: 2rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -42,6 +45,11 @@ $pages = [
     list-style: none;
     padding: 0;
     gap: 0.5rem;
+  }
+
+  #navbar-title {
+    font-size: 1.5rem;
+    font-weight: 700;
   }
 
   nav ul a {

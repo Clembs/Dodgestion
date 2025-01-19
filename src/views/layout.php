@@ -6,7 +6,7 @@ Ce fichier est inclus dans toutes les pages de l'application.
 <?php
 require 'navbar.php';
 
-$completeTitle = "Gestion sportive | $title";
+$completeTitle = "Dodgestion | $title";
 ?>
 
 <!DOCTYPE html>
@@ -27,7 +27,6 @@ $completeTitle = "Gestion sportive | $title";
   <meta name="title" content="<?= $completeTitle ?>" />
   <meta name="og:title" content="<?= $completeTitle ?>" />
   <meta name="og:type" content="website" />
-  <meta name="description" content="Application de gestion sportive" />
   <meta property="theme-color" content="#e1ff00" />
   <meta name="copyright" content=<?= date('Y') ?> />
   <meta name="robots" content="index, follow" />
