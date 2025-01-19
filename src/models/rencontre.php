@@ -3,10 +3,11 @@ require __DIR__ . '/database.php';
 
 enum ResultatRencontre: string
 {
-  case VICTOIRE;
-  case DEFAITE;
-  case NUL;
+  case VICTOIRE = 'VICTOIRE';
+  case DEFAITE = 'DEFAITE';
+  case NUL = 'NUL';
 }
+
 class Rencontre
 {
   // Constructeur
