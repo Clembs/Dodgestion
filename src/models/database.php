@@ -6,12 +6,26 @@ class Database
 
   public function __construct()
   {
-    $ini = parse_ini_file('../../php.ini');
+    try {
+      $databaseIni = parse_ini_file(__DIR__ . '/../../config.ini', true)['database'];
+    } catch (Exception $e) {
+      die("Erreur lors de la lecture du config.ini : " . $e->getMessage());
+    }
 
     try {
-      $this->connection = new PDO($ini['database_url']);
+      $driver = $databaseIni['driver'];
+      $host = $databaseIni['host'];
+      $port = $databaseIni['port'];
+      $database = $databaseIni['database'];
+      $username = $databaseIni['username'];
+      $password = $databaseIni['password'];
+
+      $dsn = "$driver:host=$host;port=$port;dbname=$database";
+
+      $this->connection = new PDO($dsn, $username, $password);
+
     } catch (PDOException $e) {
-      die("Erreur : " . $e->getMessage());
+      die("Erreur lors de la création de la connexion à la base de données : " . $e->getMessage() . json_encode($databaseIni));
     }
   }
 
