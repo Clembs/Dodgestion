@@ -6,6 +6,7 @@
   border: none;
   cursor: pointer;
   height: max-content;
+  user-select: none;
 }
 
 .button.primary {
@@ -27,6 +28,7 @@
 .input .label {
   color: var(--color-subtext);
   margin-left: 1rem;
+  user-select: none;
 }
 
 .input input,

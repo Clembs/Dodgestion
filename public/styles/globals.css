@@ -7,6 +7,27 @@
 *::before {
   box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
+
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-primary) transparent;
+}
+
+*::selection {
+  background-color: var(--color-primary);
+  color: var(--color-background);
+}
+
+*::webkit-scrollbar {
+  width: 5px;
+}
+
+*::webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::webkit-scrollbar-thumb {
+  background-color: var(--color-primary);
+  border-radius: 10px;
 }
 
 html,
