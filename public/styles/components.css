@@ -1,0 +1,44 @@
+.button {
+  padding: 0.75rem 1.5rem;
+  border-radius: 1.75rem;
+  background-color: var(--color-surface-variant);
+  color: var(--color-text);
+  border: none;
+  cursor: pointer;
+}
+
+.button.primary {
+  background-color: var(--color-primary);
+  color: var(--color-background);
+}
+
+.input {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.input .label {
+  color: var(--color-subtext);
+  margin-left: 1rem;
+}
+
+.input input,
+.input textarea {
+  border: none;
+  background-color: var(--color-surface-variant);
+  border-radius: 1.75rem;
+  padding: 1rem 1.5rem;
+  color: var(--color-text);
+  width: 100%;
+}
+
+.input:has(input) {
+  max-width: 320px;
+}
+
+.input textarea {
+  resize: vertical;
+  min-height: 100px;
+}

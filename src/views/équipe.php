@@ -1,6 +1,4 @@
 <?php
-$title = 'Mon équipe';
-
 /**
  * @var Joueur $joueurSelectionne
  * @var Joueur[] $joueurs
@@ -99,7 +97,7 @@ $title = 'Mon équipe';
 
       <div class="buttons">
         <button class="button" type="reset">Annuler</button>
-        <button class="button" type="submit">Enregistrer</button>
+        <button class="button primary" type="submit">Enregistrer</button>
       </div>
     </form>
   </div>
@@ -250,20 +248,6 @@ $title = 'Mon équipe';
     gap: 1rem;
     justify-content: flex-end;
     margin-top: auto;
-  }
-
-  .button {
-    padding: 0.75rem 1.5rem;
-    border-radius: 1.75rem;
-    background-color: var(--color-primary);
-    color: var(--color-background);
-    border: none;
-    cursor: pointer;
-  }
-
-  .button[type="reset"] {
-    background-color: var(--color-surface-variant);
-    color: var(--color-text);
   }
 </style>
 <?php $head = isset($head) ? $head . ob_get_clean() : ob_get_clean(); ?>

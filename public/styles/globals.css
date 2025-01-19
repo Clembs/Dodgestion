@@ -1,14 +1,5 @@
-/* Déclaration des variables CSS */
-:root {
-  --color-background: hsl(97, 35%, 7%);
-  --color-primary: hsl(67, 100%, 50%);
-  --color-text: hsl(0, 0%, 100%);
-  --color-subtext: hsl(0, 0%, 60%);
-  --color-danger: hsl(0, 100%, 50%);
-  --color-surface: hsla(99, 10%, 27%, 0.4);
-  --color-surface-variant: hsla(96, 10%, 40%, 0.5);
-  --font-family: "Spline Sans", sans-serif;
-}
+@import "./components.css"; /* Importe les styles des composants */
+@import "./variables.css"; /* Importe les variables CSS */
 
 /* Styles CSS initiaux pour retirer certains comportements de navigateur par défaut indésirables */
 *,
