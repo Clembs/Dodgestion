@@ -10,8 +10,7 @@ class Utilisateur
     private string $motDePasse,
     private string $pseudo,
     private DateTime $dateCreation,
-  ) {
-  }
+  ) {}
 
   // Getters
   public function getId(): ?int
@@ -47,7 +46,7 @@ class Utilisateur
   // Méthodes pour insérer, lire, mettre à jour et supprimer un utilisateur
 
   // Insérer un utilisateur
-  public function create(): void
+  public  function create(): void
   {
     try {
       $linkpdo = Database::getPDO();
