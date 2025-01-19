@@ -212,37 +212,6 @@
     gap: 1rem;
   }
 
-  .input {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    width: 100%;
-  }
-
-  .input .label {
-    color: var(--color-subtext);
-    margin-left: 1rem;
-  }
-
-  .input input,
-  .input textarea {
-    border: none;
-    background-color: var(--color-surface-variant);
-    border-radius: 1.75rem;
-    padding: 1rem 1.5rem;
-    color: var(--color-text);
-    width: 100%;
-  }
-
-  .input:has(input) {
-    max-width: 320px;
-  }
-
-  .input textarea {
-    resize: vertical;
-    min-height: 100px;
-  }
-
   .buttons {
     display: flex;
     gap: 1rem;
