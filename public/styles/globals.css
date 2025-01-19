@@ -20,11 +20,11 @@ html {
 }
 
 body {
-  font-family: sans-serif;
   font-size: 16px;
   line-height: 1.5;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   min-height: 100vh;
 
   display: flex;
