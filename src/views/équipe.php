@@ -112,12 +112,17 @@
 
 <!-- CSS -->
 <style data-file="tableau-de-bord">
+  body {
+    height: 100vh;
+  }
+
   main {
     display: flex;
     gap: 2rem;
     padding: 2rem;
     padding-top: 0;
     flex: 1;
+    overflow: hidden;
   }
 
   /* Partie barre latérale */
@@ -150,7 +155,6 @@
 
     padding: 0.75rem;
     margin: 0;
-    height: 100%;
 
     overflow-y: auto;
   }
@@ -201,10 +205,7 @@
   }
 
   #infos-joueur form {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    height: 100%;
+    display: contents;
   }
 
   #infos-joueur .ligne {
