@@ -1,12 +1,12 @@
 <?php
-require 'database.php';
+require __DIR__ . '/database.php';
 
 enum StatutJoueur: string
 {
-  case ACTIF = "Actif";
-  case BLESSE = "Blessé";
-  case SUSPENDU = "Suspendu";
-  case ABSENT = "Absent";
+  case ACTIF = "ACTIF";
+  case BLESSE = "BLESSE";
+  case SUSPENDU = "SUSPENDU";
+  case ABSENT = "ABSENT";
 }
 class Joueur
 {
@@ -80,7 +80,10 @@ class Joueur
     try {
       $linkpdo = Database::getPDO();
 
-      $req = $linkpdo->prepare('INSERT INTO joueur(prenom, nom, numero_license, date_naissance, taille, poids, note, statut) VALUES(:prenom, :nom, :numero_license, :date_naissance, :taille, :poids, :note, :statut)');
+      $req = $linkpdo->prepare(
+        "INSERT INTO joueurs(prenom, nom, numero_license, date_naissance, taille, poids, note, statut)
+        VALUES(:prenom, :nom, :numero_license, :date_naissance, :taille, :poids, :note, :statut)"
+      );
 
       $req->execute([
         'prenom' => $this->getPrenom(),
@@ -97,7 +100,37 @@ class Joueur
     }
   }
 
-  public static function read(
+  public static function getJoueurs(): array
+  {
+    try {
+      $linkpdo = Database::getPDO();
+    } catch (Exception $e) {
+      die('Erreur: ' . $e->getMessage());
+    }
+    $req = $linkpdo->prepare('SELECT * FROM joueurs');
+    $req->execute();
+    $res = $req->fetchAll(PDO::FETCH_ASSOC);
+
+    $joueurs = [];
+    foreach ($res as $joueur) {
+      $joueurs[$joueur['numero_license']] = new Joueur(
+        $joueur['id_joueur'],
+        $joueur['prenom'],
+        $joueur['nom'],
+        $joueur['numero_license'],
+        new DateTime($joueur['date_naissance']),
+        $joueur['taille'],
+        $joueur['poids'],
+        $joueur['note'],
+        StatutJoueur::from($joueur['statut'])
+      );
+    }
+
+    return $joueurs;
+  }
+
+
+  public static function findByNumeroLicense(
     string $numeroLicense
   ): Joueur {
     try {
@@ -105,7 +138,7 @@ class Joueur
     } catch (Exception $e) {
       die('Erreur: ' . $e->getMessage());
     }
-    $req = $linkpdo->prepare('SELECT * FROM  joueur WHERE numero_license = :numero_license ');
+    $req = $linkpdo->prepare('SELECT * FROM joueurs WHERE numero_license = :numero_license');
 
     $req->execute([
       'numero_license' => $numeroLicense
