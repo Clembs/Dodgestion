@@ -9,8 +9,8 @@ class Rencontre
     private DateTime $date,
     private string $lieu,
     private string $nomAdversaire,
-    private int $pointsEquipe,
-    private int $pointsAdversaire,
+    private ?int $pointsEquipe,
+    private ?int $pointsAdversaire,
   ) {
   }
 
@@ -39,12 +39,12 @@ class Rencontre
     return $this->nomAdversaire;
   }
 
-  public function getPointsEquipe(): int
+  public function getPointsEquipe(): ?int
   {
     return $this->pointsEquipe;
   }
 
-  public function getPointsAdversaire(): int
+  public function getPointsAdversaire(): ?int
   {
     return $this->pointsAdversaire;
   }
