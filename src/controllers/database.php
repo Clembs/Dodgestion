@@ -1,7 +1,7 @@
 <?php
 class Database
 {
-  private Database $instance;
+  private static ?Database $instance = null;
   public PDO $connection;
 
   public function __construct()
@@ -18,10 +18,10 @@ class Database
   // singleton pour éviter de créer plusieurs connexions à la base de données
   public static function getPDO(): PDO
   {
-    if (!isset($connection)) {
-      $instance = new Database();
+    if (self::$instance === null) {
+      self::$instance = new Database();
     }
 
-    return $instance->connection;
+    return self::$instance->connection;
   }
 }
