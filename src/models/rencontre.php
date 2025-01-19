@@ -1,11 +1,12 @@
 <?php
+require __DIR__ . '/database.php';
+
 enum ResultatRencontre: string
 {
   case VICTOIRE;
   case DEFAITE;
   case NUL;
 }
-require_once 'joueur.php';
 class Rencontre
 {
   // Constructeur
