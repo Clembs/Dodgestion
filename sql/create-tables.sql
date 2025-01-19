@@ -12,6 +12,7 @@ CREATE TABLE joueurs (
   id_joueur SERIAL PRIMARY KEY,
   prenom VARCHAR(50) NOT NULL,
   nom VARCHAR(50) NOT NULL,
+  numero_license VARCHAR(50) UNIQUE NOT NULL,
   date_naissance DATE NOT NULL,
   taille INT NOT NULL,
   poids INT NOT NULL,
