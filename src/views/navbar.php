@@ -2,10 +2,8 @@
 $page = $_GET['page'] ?? 'tableau-de-bord';
 
 $pages = [
-  'tableau-de-bord' => 'Tableau de bord',
   'équipe' => 'Mon équipe',
   'matches' => 'Mes matches',
-  'statistiques' => 'Statistiques',
 ];
 ?>
 

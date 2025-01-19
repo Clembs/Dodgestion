@@ -2,15 +2,14 @@
 // Routeur basique
 
 // Les liens se font vers /?page=nom-de-la-page
-$page = $_GET['page'] ?? 'tableau-de-bord';
+$page = $_GET['page'] ?? 'équipe';
 
 require_once '../src/controllers/équipe.php';
 require_once '../src/controllers/matches.php';
 
 // on require la page correspondante avec la syntaxe match
 require_once match ($page) {
-  // il suffit d'ajout comme cas un nom de page et le chemin vers le fichier
-  'tableau-de-bord' => '../src/views/tableau-de-bord.php',
+  // il suffit d'ajouter comme clef le nom de la page, et comme valeur le contrôleur
   'équipe' => ControleurÉquipe::playerInfo(
     $_GET['joueur'],
     $_GET['query'],
