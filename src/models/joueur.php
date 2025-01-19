@@ -8,6 +8,7 @@ enum StatutJoueur: string
   case SUSPENDU = "SUSPENDU";
   case ABSENT = "ABSENT";
 }
+
 class Joueur
 {
   // Constructeur
@@ -104,29 +105,31 @@ class Joueur
   {
     try {
       $linkpdo = Database::getPDO();
+
+      $req = $linkpdo->prepare('SELECT * FROM joueurs');
+      $req->execute();
+      $res = $req->fetchAll(PDO::FETCH_ASSOC);
+
+      $joueurs = [];
+      foreach ($res as $joueur) {
+        $joueurs[$joueur['numero_license']] = new Joueur(
+          $joueur['id_joueur'],
+          $joueur['prenom'],
+          $joueur['nom'],
+          $joueur['numero_license'],
+          new DateTime($joueur['date_naissance']),
+          $joueur['taille'],
+          $joueur['poids'],
+          $joueur['note'],
+          StatutJoueur::from($joueur['statut'])
+        );
+      }
+
+      return $joueurs;
+
     } catch (Exception $e) {
-      die('Erreur: ' . $e->getMessage());
+      die('Erreur lors de la lecture des joueurs : ' . $e->getMessage());
     }
-    $req = $linkpdo->prepare('SELECT * FROM joueurs');
-    $req->execute();
-    $res = $req->fetchAll(PDO::FETCH_ASSOC);
-
-    $joueurs = [];
-    foreach ($res as $joueur) {
-      $joueurs[$joueur['numero_license']] = new Joueur(
-        $joueur['id_joueur'],
-        $joueur['prenom'],
-        $joueur['nom'],
-        $joueur['numero_license'],
-        new DateTime($joueur['date_naissance']),
-        $joueur['taille'],
-        $joueur['poids'],
-        $joueur['note'],
-        StatutJoueur::from($joueur['statut'])
-      );
-    }
-
-    return $joueurs;
   }
 
 
@@ -135,27 +138,27 @@ class Joueur
   ): Joueur {
     try {
       $linkpdo = Database::getPDO();
+      $req = $linkpdo->prepare('SELECT * FROM joueurs WHERE numero_license = :numero_license');
+
+      $req->execute([
+        'numero_license' => $numeroLicense
+      ]);
+
+      $res = $req->fetch(PDO::FETCH_ASSOC);
+
+      return new Joueur(
+        $res['id_joueur'],
+        $res['prenom'],
+        $res['nom'],
+        $res['numero_license'],
+        new DateTime($res['date_naissance']),
+        $res['taille'],
+        $res['poids'],
+        $res['note'],
+        StatutJoueur::from($res['statut'])
+      );
     } catch (Exception $e) {
-      die('Erreur: ' . $e->getMessage());
+      die('Erreur lors de la lecture du joueur : ' . $e->getMessage());
     }
-    $req = $linkpdo->prepare('SELECT * FROM joueurs WHERE numero_license = :numero_license');
-
-    $req->execute([
-      'numero_license' => $numeroLicense
-    ]);
-
-    $res = $req->fetch(PDO::FETCH_ASSOC);
-
-    return new Joueur(
-      $res['id_joueur'],
-      $res['prenom'],
-      $res['nom'],
-      $res['numero_license'],
-      new DateTime($res['date_naissance']),
-      $res['taille'],
-      $res['poids'],
-      $res['note'],
-      StatutJoueur::from($res['statut'])
-    );
   }
 }
