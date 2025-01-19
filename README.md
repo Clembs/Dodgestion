@@ -1,6 +1,8 @@
-# Mini-projet R3.01
+# Dodgestion - Mini-projet R3.01
 
-Ce site web permet de gérer une équipe sportive. Projet scolaire du BUT Informatique dans le but de maîtriser PHP.
+Ce site web permet de gérer une équipe de dodgeball (balle au prisonnier). Projet scolaire du BUT Informatique dont le but est de maîtriser PHP.
+
+![License MIT](https://img.shields.io/github/license/Clembs/Mini-projet-R3.01) ![PHP 8.3.15](https://img.shields.io/badge/PHP-8.3.15-blue?logo=php&logoColor=white&color=4f5b93) ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-blue?logo=postgresql&logoColor=white&color=2f6792)
 
 ## Commandes
 
@@ -12,13 +14,15 @@ php -S localhost:[port] -t public/
 
 ## Structure du projet
 
+Le projet utilise une architecture MVC (Modèle-Vue-Contrôleur) :
+
 - `public/`: Dossier contenant les fichiers accessibles publiquement
-- `public/index.php`: Routeur du projet, accède aux différentes vues
+- `public/index.php`: Routeur du projet, accède aux différentes pages
 - `public/globals.css`: Feuilles de style globales
 - `src/`: Dossier contenant les fichiers PHP
-- `src/controllers/`: Dossier contenant les contrôleurs
-- `src/models/`: Dossier contenant les modèles
-- `src/views/`: Dossier contenant les vues
+- `src/controllers/`: Dossier contenant les contrôleurs (logique métier)
+- `src/models/`: Dossier contenant les modèles (accès à la base de données)
+- `src/views/`: Dossier contenant les vues (affichage)
 
 ## Configuration
 
