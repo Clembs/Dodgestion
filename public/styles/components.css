@@ -30,7 +30,8 @@
 }
 
 .input input,
-.input textarea {
+.input textarea,
+.input select {
   border: none;
   background-color: var(--color-surface-variant);
   border-radius: 1.75rem;
@@ -39,11 +40,20 @@
   width: 100%;
 }
 
-.input:has(input) {
+.input:has(input),
+.input:has(select) {
   max-width: 320px;
 }
 
 .input textarea {
   resize: vertical;
   min-height: 100px;
+}
+
+.error {
+  color: var(--color-danger);
+}
+
+.input .error {
+  margin-left: 1rem;
 }

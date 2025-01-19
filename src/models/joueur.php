@@ -101,6 +101,9 @@ class Joueur
     }
   }
 
+  /**
+   * @return Joueur[]
+   */
   public static function getJoueurs(): array
   {
     try {
@@ -110,28 +113,29 @@ class Joueur
       $req->execute();
       $res = $req->fetchAll(PDO::FETCH_ASSOC);
 
-      $joueurs = [];
-      foreach ($res as $joueur) {
-        $joueurs[$joueur['numero_license']] = new Joueur(
-          $joueur['id_joueur'],
-          $joueur['prenom'],
-          $joueur['nom'],
-          $joueur['numero_license'],
-          new DateTime($joueur['date_naissance']),
-          $joueur['taille'],
-          $joueur['poids'],
-          $joueur['note'],
-          StatutJoueur::from($joueur['statut'])
-        );
-      }
-
-      return $joueurs;
-
+      // Retourne un tableau de Joueur avec pour clef le numéro de licence
+      return array_reduce(
+        $res,
+        function ($acc, $joueur) {
+          $acc[$joueur['numero_license']] = new Joueur(
+            $joueur['id_joueur'],
+            $joueur['prenom'],
+            $joueur['nom'],
+            $joueur['numero_license'],
+            new DateTime($joueur['date_naissance']),
+            $joueur['taille'],
+            $joueur['poids'],
+            $joueur['note'],
+            StatutJoueur::from($joueur['statut'])
+          );
+          return $acc;
+        },
+        []
+      );
     } catch (Exception $e) {
       die('Erreur lors de la lecture des joueurs : ' . $e->getMessage());
     }
   }
-
 
   public static function findByNumeroLicense(
     string $numeroLicense
@@ -159,6 +163,43 @@ class Joueur
       );
     } catch (Exception $e) {
       die('Erreur lors de la lecture du joueur : ' . $e->getMessage());
+    }
+  }
+
+  public function update(array $data): void
+  {
+    try {
+      $linkpdo = Database::getPDO();
+      $req = $linkpdo->prepare(
+        "UPDATE joueurs
+        SET prenom = :prenom, nom = :nom, numero_license = :numero_license, date_naissance = :date_naissance,
+        taille = :taille, poids = :poids, note = :note, statut = :statut
+        WHERE id_joueur = :id_joueur"
+      );
+
+      $req->execute([
+        'id_joueur' => $this->getId(),
+        'prenom' => $data['prenom'],
+        'nom' => $data['nom'],
+        'numero_license' => $data['numero_license'],
+        'date_naissance' => $data['date_naissance'],
+        'taille' => $data['taille'],
+        'poids' => $data['poids'],
+        'note' => $data['note'],
+        'statut' => $data['statut']
+      ]);
+
+      // On met à jour les données du joueur
+      $this->prenom = $data['prenom'];
+      $this->nom = $data['nom'];
+      $this->numeroLicense = $data['numero_license'];
+      $this->dateNaissance = new DateTime($data['date_naissance']);
+      $this->taille = $data['taille'];
+      $this->poids = $data['poids'];
+      $this->note = $data['note'];
+      $this->statut = StatutJoueur::from($data['statut']);
+    } catch (Exception $e) {
+      die('Erreur lors de la mise à jour du joueur : ' . $e->getMessage());
     }
   }
 }

@@ -2,6 +2,7 @@
 /**
  * @var Joueur $joueurSelectionne
  * @var Joueur[] $joueurs
+ * @var array $erreurs
  * @var string $recherche
  */
 ?>
@@ -41,10 +42,10 @@
 
               <div class="subtext player-status <?= strtolower($joueur->getStatut()->value) ?>">
                 <?= match ($joueur->getStatut()) {
-                  StatutJoueur::ACTIF => 'Actif',
-                  StatutJoueur::BLESSE => 'Blessé',
-                  StatutJoueur::SUSPENDU => 'Suspendu',
-                  StatutJoueur::ABSENT => 'Absent',
+                  StatutJoueur::ACTIF => 'Actif/ve',
+                  StatutJoueur::BLESSE => 'Blessé(e)',
+                  StatutJoueur::SUSPENDU => 'Suspendu(e)',
+                  StatutJoueur::ABSENT => 'Absent(e)',
                 } ?>
               </div>
 
@@ -60,49 +61,104 @@
     <div id="infos-joueur-header">
       <h2> <?= $joueurSelectionne->getPrenom() ?> <?= $joueurSelectionne->getNom() ?> </h2>
       <p class="subtext">
-        Numéro de licence : <?= $joueurSelectionne->getNumeroLicense() ?>
+        Numéro de license : <?= $joueurSelectionne->getNumeroLicense() ?>
       </p>
     </div>
 
-    <form action="/?form=équipe" method="post">
+    <form action="/submit.php/?form=équipe&joueur=<?= $joueurSelectionne->getNumeroLicense() ?>" method="post">
+      <div class="ligne">
+        <label class="input" for="statut">
+          <div class="label">Statut</div>
+          <select name="statut" id="statut">
+            <?php foreach (StatutJoueur::cases() as $statut): ?>
+              <option value="<?= $statut->value ?>" <?= $joueurSelectionne->getStatut() === $statut ? 'selected' : '' ?>>
+                <?= match ($statut) {
+                  StatutJoueur::ACTIF => 'Actif/ve',
+                  StatutJoueur::BLESSE => 'Blessé(e)',
+                  StatutJoueur::SUSPENDU => 'Suspendu(e)',
+                  StatutJoueur::ABSENT => 'Absent(e)',
+                } ?>
+              </option>
+            <?php endforeach; ?>
+          </select>
+
+          <?php if (isset($erreurs['statut'])): ?>
+            <div class="error"><?= $erreurs['statut'] ?></div>
+          <?php endif; ?>
+        </label>
+      </div>
+
+
       <div class="ligne">
         <label class="input" for="prenom">
           <div class="label">Prénom</div>
-          <input type="text" name="prenom" id="prenom" value="<?= $joueurSelectionne->getPrenom() ?>">
+          <input type="text" name="prenom" id="prenom" value="<?= $joueurSelectionne->getPrenom() ?>" required
+            maxlength="50">
+
+          <?php if (isset($erreurs['prenom'])): ?>
+            <div class="error"><?= $erreurs['prenom'] ?></div>
+          <?php endif; ?>
         </label>
 
         <label class="input" for="nom">
           <div class="label">Nom</div>
-          <input type="text" name="nom" id="nom" value="<?= $joueurSelectionne->getNom() ?>">
+          <input type="text" name="nom" id="nom" value="<?= $joueurSelectionne->getNom() ?>" required maxlength="50">
+
+          <?php if (isset($erreurs['nom'])): ?>
+            <div class="error"><?= $erreurs['nom'] ?></div>
+          <?php endif; ?>
         </label>
       </div>
       <div class="ligne">
-        <label class="input" for="licence">
-          <div class="label">Licence</div>
-          <input type="text" name="licence" id="licence" value="<?= $joueurSelectionne->getNumeroLicense() ?>">
+        <label class="input" for="numero_license">
+          <div class="label">Numéro de license</div>
+          <input type="text" name="numero_license" id="numero_license"
+            value="<?= $joueurSelectionne->getNumeroLicense() ?>" required maxlength="50">
+
+          <?php if (isset($erreurs['numero_license'])): ?>
+            <div class="error"><?= $erreurs['numero_license'] ?></div>
+          <?php endif; ?>
         </label>
       </div>
       <div class="ligne">
         <label class="input" for="date_naissance">
           <div class="label">Date de naissance</div>
           <input type="date" name="date_naissance" id="date_naissance"
-            value="<?= $joueurSelectionne->getDateNaissance()->format('Y-m-d') ?>">
+            value="<?= $joueurSelectionne->getDateNaissance()->format('Y-m-d') ?>" required>
+
+          <?php if (isset($erreurs['date_naissance'])): ?>
+            <div class="error"><?= $erreurs['date_naissance'] ?></div>
+          <?php endif; ?>
         </label>
 
         <label class="input" for="taille">
           <div class="label">Taille (en cm)</div>
-          <input type="number" name="taille" id="taille" value="<?= $joueurSelectionne->getTaille() ?>">
+          <input type="number" name="taille" id="taille" value="<?= $joueurSelectionne->getTaille() ?>" min="50"
+            max="250" required>
+
+          <?php if (isset($erreurs['taille'])): ?>
+            <div class="error"><?= $erreurs['taille'] ?></div>
+          <?php endif; ?>
         </label>
 
         <label class="input" for="poids">
           <div class="label">Poids (en kg)</div>
-          <input type="number" name="poids" id="poids" value="<?= $joueurSelectionne->getPoids() ?>">
+          <input type="number" name="poids" id="poids" value="<?= $joueurSelectionne->getPoids() ?>" min="20" max="200"
+            required>
+
+          <?php if (isset($erreurs['poids'])): ?>
+            <div class="error"><?= $erreurs['poids'] ?></div>
+          <?php endif; ?>
         </label>
       </div>
       <div class="ligne">
         <label class="input" for="note">
           <div class="label">Note</div>
-          <textarea name="note" id="note"><?= $joueurSelectionne->getNote() ?></textarea>
+          <textarea maxlength="2000" name="note" id="note"><?= $joueurSelectionne->getNote() ?></textarea>
+
+          <?php if (isset($erreurs['note'])): ?>
+            <div class="error"><?= $erreurs['note'] ?></div>
+          <?php endif; ?>
         </label>
       </div>
 
