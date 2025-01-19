@@ -1,32 +1,10 @@
 <?php
 $title = 'Mon équipe';
 
-$joueurs = [
-  '123456' => [
-    'nom' => 'Pawilowski',
-    'prenom' => 'Kylian',
-    'status' => 'ACTIF',
-    'licence' => '123456',
-    'date_naissance' => '1990-01-01',
-    'taille' => 180,
-    'poids' => 75,
-    'note' => 'Cool et sympa',
-    'photo' => 'https://www.thispersondoesnotexist.com/',
-  ],
-  '123457' => [
-    'nom' => 'Voisin',
-    'prenom' => 'Clément',
-    'status' => 'BLESSE',
-    'licence' => '123457',
-    'date_naissance' => '1991-01-01',
-    'taille' => 175,
-    'poids' => 70,
-    'note' => 'Bonne condition physique',
-    'photo' => 'https://www.thispersondoesnotexist.com/',
-  ],
-];
-
-$joueurSélectionné = $joueurs[$_GET['joueur'] ?? '123456'];
+/**
+ * @var Joueur $joueurSelectionne
+ * @var Joueur[] $joueurs
+ */
 ?>
 
 <?php ob_start(); ?>
@@ -44,21 +22,20 @@ $joueurSélectionné = $joueurs[$_GET['joueur'] ?? '123456'];
       <?php foreach ($joueurs as $id => $joueur): ?>
         <li>
           <a class="joueur" href="?page=équipe&joueur=<?= $id ?>"
-            aria-current="<?= $joueurSélectionné === $joueur ? 'page' : 'false' ?>">
-            <img width="48" height="48" src="<?= $joueur['photo'] ?>"
-              alt="Photo de  <?= $joueur['prenom'] ?> <?= $joueur['nom'] ?>" />
+            aria-current="<?= $joueurSelectionne->getId() === $joueur->getId() ? 'page' : 'false' ?>">
+            <!-- TODO: ajouter la photo -->
 
             <div class="text">
               <div class="player-name">
-                <?= $joueur['prenom'] ?>   <?= $joueur['nom'] ?>
+                <?= $joueur->getPrenom() ?>   <?= $joueur->getNom() ?>
               </div>
 
-              <div class="subtext player-status <?= strtolower($joueur['status']) ?>">
-                <?= match ($joueur['status']) {
-                  'ACTIF' => 'Actif',
-                  'BLESSE' => 'Blessé',
-                  'SUSPENDU' => 'Suspendu',
-                  'ABSENT' => 'Absent',
+              <div class="subtext player-status <?= strtolower($joueur->getStatut()->value) ?>">
+                <?= match ($joueur->getStatut()) {
+                  StatutJoueur::ACTIF => 'Actif',
+                  StatutJoueur::BLESSE => 'Blessé',
+                  StatutJoueur::SUSPENDU => 'Suspendu',
+                  StatutJoueur::ABSENT => 'Absent',
                 } ?>
               </div>
 
@@ -72,9 +49,9 @@ $joueurSélectionné = $joueurs[$_GET['joueur'] ?? '123456'];
   <!-- Informations sur le joueur sélectionné -->
   <div class="surface" id="infos-joueur">
     <div id="infos-joueur-header">
-      <h2> <?= $joueurSélectionné['prenom'] ?> <?= $joueurSélectionné['nom'] ?> </h2>
+      <h2> <?= $joueurSelectionne->getPrenom() ?> <?= $joueurSelectionne->getNom() ?> </h2>
       <p class="subtext">
-        Numéro de licence : <?= $joueurSélectionné['licence'] ?>
+        Numéro de licence : <?= $joueurSelectionne->getNumeroLicense() ?>
       </p>
     </div>
 
@@ -82,41 +59,41 @@ $joueurSélectionné = $joueurs[$_GET['joueur'] ?? '123456'];
       <div class="ligne">
         <label class="input" for="prenom">
           <div class="label">Prénom</div>
-          <input type="text" name="prenom" id="prenom" value="<?= $joueurSélectionné['prenom'] ?>">
+          <input type="text" name="prenom" id="prenom" value="<?= $joueurSelectionne->getPrenom() ?>">
         </label>
 
         <label class="input" for="nom">
           <div class="label">Nom</div>
-          <input type="text" name="nom" id="nom" value="<?= $joueurSélectionné['nom'] ?>">
+          <input type="text" name="nom" id="nom" value="<?= $joueurSelectionne->getNom() ?>">
         </label>
       </div>
       <div class="ligne">
         <label class="input" for="licence">
           <div class="label">Licence</div>
-          <input type="text" name="licence" id="licence" value="<?= $joueurSélectionné['licence'] ?>">
+          <input type="text" name="licence" id="licence" value="<?= $joueurSelectionne->getNumeroLicense() ?>">
         </label>
       </div>
       <div class="ligne">
         <label class="input" for="date_naissance">
           <div class="label">Date de naissance</div>
           <input type="date" name="date_naissance" id="date_naissance"
-            value="<?= $joueurSélectionné['date_naissance'] ?>">
+            value="<?= $joueurSelectionne->getDateNaissance()->format('Y-m-d') ?>">
         </label>
 
         <label class="input" for="taille">
           <div class="label">Taille (en cm)</div>
-          <input type="number" name="taille" id="taille" value="<?= $joueurSélectionné['taille'] ?>">
+          <input type="number" name="taille" id="taille" value="<?= $joueurSelectionne->getTaille() ?>">
         </label>
 
         <label class="input" for="poids">
           <div class="label">Poids (en kg)</div>
-          <input type="number" name="poids" id="poids" value="<?= $joueurSélectionné['poids'] ?>">
+          <input type="number" name="poids" id="poids" value="<?= $joueurSelectionne->getPoids() ?>">
         </label>
       </div>
       <div class="ligne">
         <label class="input" for="note">
           <div class="label">Note</div>
-          <textarea name="note" id="note"><?= $joueurSélectionné['note'] ?></textarea>
+          <textarea name="note" id="note"><?= $joueurSelectionne->getNote() ?></textarea>
         </label>
       </div>
 
@@ -290,5 +267,3 @@ $joueurSélectionné = $joueurs[$_GET['joueur'] ?? '123456'];
   }
 </style>
 <?php $head = isset($head) ? $head . ob_get_clean() : ob_get_clean(); ?>
-
-<?php require 'layout.php'; ?>
