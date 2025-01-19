@@ -1,5 +1,5 @@
 <?php
-require '../controllers/database.php';
+require 'database.php';
 
 enum StatutJoueur: string
 {
