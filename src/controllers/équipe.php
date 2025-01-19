@@ -2,7 +2,7 @@
 
 class ControleurÉquipe
 {
-  public static function playerInfo(?string $numeroLicense): void
+  public static function playerInfo(?string $numeroLicense, ?string $recherche = ''): void
   {
     require __DIR__ . '/../models/joueur.php';
 
@@ -14,6 +14,15 @@ class ControleurÉquipe
 
     // On récupère le joueur sélectionné (ou le premier joueur si aucun numéro de licence n'est fourni)
     $joueurSelectionne = $joueurs[$numeroLicense ?? array_key_first($joueurs)];
+
+    // Ne donner que les des joueurs filtrés selon $recherche (recherche par nom, prénom ou numéro de licence)
+    $joueurs = array_filter(
+      $joueurs,
+      fn($joueur) =>
+      str_contains(strtolower($joueur->getNom()), strtolower($recherche)) ||
+      str_contains(strtolower($joueur->getPrenom()), strtolower($recherche)) ||
+      str_contains(strtolower($joueur->getNumeroLicense()), strtolower($recherche))
+    );
 
     // Si le joueur sélectionné n'existe pas, on affiche une page 404
     if ($joueurSelectionne === null) {

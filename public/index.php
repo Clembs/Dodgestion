@@ -10,7 +10,7 @@ require_once '../src/controllers/équipe.php';
 require_once match ($page) {
   // il suffit d'ajout comme cas un nom de page et le chemin vers le fichier
   'tableau-de-bord' => '../src/views/tableau-de-bord.php',
-  'équipe' => ControleurÉquipe::playerInfo($_GET['joueur']),
+  'équipe' => ControleurÉquipe::playerInfo($_GET['joueur'], $_GET['query']),
   // fallback sur une page 404
   default => '../src/views/404.php',
 };

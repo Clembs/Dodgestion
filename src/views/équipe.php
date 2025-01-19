@@ -2,6 +2,7 @@
 /**
  * @var Joueur $joueurSelectionne
  * @var Joueur[] $joueurs
+ * @var string $recherche
  */
 ?>
 
@@ -12,9 +13,19 @@
   <aside>
     <h1> Mon équipe </h1>
 
-    <div class="input" id="recherche-joueur">
-      <input type="text" placeholder="Rechercher un joueur" />
-    </div>
+    <form method="GET" class="input" id="recherche-joueur">
+      <input type="hidden" name="page" value="équipe" />
+      <input name="query" type="text" placeholder="Rechercher un joueur" value="<?= $recherche ?>">
+
+      <button class="button icon" type="submit" aria-label="Rechercher">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+          title="Rechercher" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+          class="lucide lucide-search">
+          <circle cx="11" cy="11" r="8" />
+          <path d="m21 21-4.3-4.3" />
+        </svg>
+      </button>
+    </form>
 
     <ul id="liste-joueurs" class="surface">
       <?php foreach ($joueurs as $id => $joueur): ?>
@@ -140,6 +151,12 @@
     margin: 0;
   }
 
+  aside .input {
+    flex-direction: row;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
   #liste-joueurs {
     display: flex;
     flex-direction: column;
@@ -147,6 +164,7 @@
 
     list-style: none;
 
+    height: 100%;
     padding: 0.75rem;
     margin: 0;
 
