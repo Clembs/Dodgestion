@@ -27,17 +27,18 @@ CREATE TABLE sessions (
   FOREIGN KEY (id_utilisateur) REFERENCES utilisateurs(id_utilisateur)
 );
 
-CREATE TYPE RESULTAT_RENCONTRE AS ENUM ('VICTOIRE', 'DEFAITE', 'NUL');
-
 CREATE TABLE rencontres (
   id_rencontre SERIAL PRIMARY KEY,
   date_rencontre TIMESTAMP NOT NULL,
   lieu VARCHAR(50) NOT NULL,
   nom_adversaire VARCHAR(50) NOT NULL,
-  resultat RESULTAT_RENCONTRE NOT NULL
+  points_equipe INT,
+  points_adversaire INT
 );
 
 CREATE TYPE POSITION_JOUEUR AS ENUM ('AVANT', 'ARRIERE');
+
+CREATE TYPE ROLE_JOUEUR AS ENUM ('TITULAIRE', 'REMPLACANT');
 
 CREATE TABLE participations (
   id_participation SERIAL PRIMARY KEY,
@@ -46,6 +47,7 @@ CREATE TABLE participations (
   note INT CHECK (note BETWEEN 0 AND 5), -- note sur 5 sur la performance du joueur (après rencontre)
   commentaire TEXT, -- commentaire sur la performance du joueur (après rencontre)
   position POSITION_JOUEUR NOT NULL,
+  role_joueur ROLE_JOUEUR NOT NULL,
   FOREIGN KEY (id_joueur) REFERENCES joueurs(id_joueur),
   FOREIGN KEY (id_rencontre) REFERENCES rencontres(id_rencontre)
 );

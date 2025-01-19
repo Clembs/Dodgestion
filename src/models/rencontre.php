@@ -1,13 +1,6 @@
 <?php
 require __DIR__ . '/database.php';
 
-enum ResultatRencontre: string
-{
-  case VICTOIRE = 'VICTOIRE';
-  case DEFAITE = 'DEFAITE';
-  case NUL = 'NUL';
-}
-
 class Rencontre
 {
   // Constructeur
@@ -16,7 +9,8 @@ class Rencontre
     private DateTime $date,
     private string $lieu,
     private string $nomAdversaire,
-    private ResultatRencontre $resultat,
+    private int $pointsEquipe,
+    private int $pointsAdversaire,
   ) {
   }
 
@@ -35,11 +29,6 @@ class Rencontre
     return $this->date;
   }
 
-  public function getResultat(): ResultatRencontre
-  {
-    return $this->resultat;
-  }
-
   public function getLieu(): string
   {
     return $this->lieu;
@@ -50,24 +39,66 @@ class Rencontre
     return $this->nomAdversaire;
   }
 
+  public function getPointsEquipe(): int
+  {
+    return $this->pointsEquipe;
+  }
+
+  public function getPointsAdversaire(): int
+  {
+    return $this->pointsAdversaire;
+  }
+
   public function create(): void
   {
     try {
       $linkpdo = Database::getPDO();
 
       $req = $linkpdo->prepare(
-        "INSERT INTO rencontres(date_rencontre, lieu, nom_adversaire, resultat)
-        VALUES(:id_rencontre, :date_rencontre, :lieu, :nom_adversaire, :resultat)"
+        "INSERT INTO rencontres(date_rencontre, lieu, nom_adversaire, points_equipe, points_adversaire)
+        VALUES(:id_rencontre, :date_rencontre, :lieu, :nom_adversaire, :points_equipe, :points_adversaire)"
       );
 
       $req->execute([
         'date_rencontre' => $this->getDate(),
         'lieu' => $this->getLieu(),
         'nom_adversaire' => $this->getNomAdversaire(),
-        'resultat' => $this->getResultat(),
+        'points_equipe' => $this->getPointsEquipe(),
+        'points_adversaire' => $this->getPointsAdversaire(),
       ]);
     } catch (Exception $e) {
       die('Erreur lors de la creation de la rencontre : ' . $e->getMessage());
+    }
+  }
+
+  /**
+   * @return Rencontre[]
+   */
+  public static function getRencontres(): array
+  {
+    try {
+      $linkpdo = Database::getPDO();
+      $req = $linkpdo->query('SELECT * FROM rencontres');
+      $res = $req->fetchAll(PDO::FETCH_ASSOC);
+
+      // Retourne un tableau de Recontre avec pour clef l'id de la rencontre
+      return array_reduce(
+        $res,
+        function ($acc, $rencontre) {
+          $acc[$rencontre['id_rencontre']] = new Rencontre(
+            $rencontre['id_rencontre'],
+            new DateTime($rencontre['date_rencontre']),
+            $rencontre['lieu'],
+            $rencontre['nom_adversaire'],
+            $rencontre['points_equipe'],
+            $rencontre['points_adversaire']
+          );
+          return $acc;
+        },
+        []
+      );
+    } catch (Exception $e) {
+      die('Erreur lors de la récupération des rencontres : ' . $e->getMessage());
     }
   }
 
@@ -88,7 +119,8 @@ class Rencontre
         new DateTime($res['date_rencontre']),
         $res['lieu'],
         $res['nom_adversaire'],
-        ResultatRencontre::from($res['resultat'])
+        $res['points_equipe'],
+        $res['points_adversaire']
       );
 
     } catch (Exception $e) {
@@ -103,7 +135,7 @@ class Rencontre
 
       $req = $linkpdo->prepare(
         "UPDATE rencontres
-        SET date_rencontre = :date_rencontre, lieu = :lieu, nom_adversaire = :nom_adversaire, resultat = :resultat
+        SET date_rencontre = :date_rencontre, lieu = :lieu, nom_adversaire = :nom_adversaire, points_equipe = :points_equipe, points_adversaire = :points_adversaire
         WHERE id_rencontre = :id_rencontre"
       );
 
@@ -112,7 +144,8 @@ class Rencontre
         'date_rencontre' => $this->getDate(),
         'lieu' => $this->getLieu(),
         'nom_adversaire' => $this->getNomAdversaire(),
-        'resultat' => $this->getResultat(),
+        'points_equipe' => $this->getPointsEquipe(),
+        'points_adversaire' => $this->getPointsAdversaire(),
       ]);
     } catch (Exception $e) {
       die('Erreur lors de la mise à jour de la rencontre : ' . $e->getMessage());
