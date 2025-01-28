@@ -18,7 +18,8 @@ require_once match ($page) {
   ),
   'matches' => ControleurMatches::matchInfo(
     $_GET['match'],
-    $_GET['tab'] ?? 'infos'
+    $_GET['tab'] ?? 'infos',
+    $_GET['erreurs'] ? json_decode($_GET['erreurs'], true) : []
   ),
   // fallback sur une page 404
   default => '../src/views/404.php',

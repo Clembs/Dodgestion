@@ -1,5 +1,5 @@
 <?php
-require __DIR__ . '/database.php';
+require_once __DIR__ . '/database.php';
 
 enum StatutJoueur: string
 {
@@ -146,6 +146,35 @@ class Joueur
 
       $req->execute([
         'numero_license' => $numeroLicense
+      ]);
+
+      $res = $req->fetch(PDO::FETCH_ASSOC);
+
+      return new Joueur(
+        $res['id_joueur'],
+        $res['prenom'],
+        $res['nom'],
+        $res['numero_license'],
+        new DateTime($res['date_naissance']),
+        $res['taille'],
+        $res['poids'],
+        $res['note'],
+        StatutJoueur::from($res['statut'])
+      );
+    } catch (Exception $e) {
+      die('Erreur lors de la lecture du joueur : ' . $e->getMessage());
+    }
+  }
+
+  public static function read(
+    string $idJoueur
+  ): Joueur {
+    try {
+      $linkpdo = Database::getPDO();
+      $req = $linkpdo->prepare('SELECT * FROM joueurs WHERE id_joueur = :id_joueur');
+
+      $req->execute([
+        'id_joueur' => $idJoueur
       ]);
 
       $res = $req->fetch(PDO::FETCH_ASSOC);

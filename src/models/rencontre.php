@@ -1,27 +1,22 @@
 <?php
-require __DIR__ . '/database.php';
+require_once __DIR__ . '/database.php';
 
 class Rencontre
 {
-  // Constructeur
   public function __construct(
     private ?int $id,
     private DateTime $date,
     private string $lieu,
     private string $nomAdversaire,
     private ?int $pointsEquipe,
-    private ?int $pointsAdversaire,
+    private ?int $pointsAdversaire
   ) {
   }
 
-  // Getters/Setters
+  // Getters
   public function getId(): ?int
   {
     return $this->id;
-  }
-  public function setId(int $id): void
-  {
-    $this->id = $id;
   }
 
   public function getDate(): DateTime
@@ -56,18 +51,18 @@ class Rencontre
 
       $req = $linkpdo->prepare(
         "INSERT INTO rencontres(date_rencontre, lieu, nom_adversaire, points_equipe, points_adversaire)
-        VALUES(:id_rencontre, :date_rencontre, :lieu, :nom_adversaire, :points_equipe, :points_adversaire)"
+        VALUES(:date_rencontre, :lieu, :nom_adversaire, :points_equipe, :points_adversaire)"
       );
 
       $req->execute([
-        'date_rencontre' => $this->getDate(),
+        'date_rencontre' => $this->getDate()->format('Y-m-d H:i:s'),
         'lieu' => $this->getLieu(),
         'nom_adversaire' => $this->getNomAdversaire(),
         'points_equipe' => $this->getPointsEquipe(),
         'points_adversaire' => $this->getPointsAdversaire(),
       ]);
     } catch (Exception $e) {
-      die('Erreur lors de la creation de la rencontre : ' . $e->getMessage());
+      die('Erreur lors de la création de la rencontre : ' . $e->getMessage());
     }
   }
 
@@ -102,16 +97,13 @@ class Rencontre
     }
   }
 
-  public static function read(
-    string $idRencontre
-  ): Rencontre {
+  public static function read(string $idRencontre): Rencontre
+  {
     try {
       $linkpdo = Database::getPDO();
       $req = $linkpdo->prepare('SELECT * FROM rencontres WHERE id_rencontre = :id_rencontre');
 
-      $req->execute([
-        'id_rencontre' => $idRencontre
-      ]);
+      $req->execute(['id_rencontre' => $idRencontre]);
       $res = $req->fetch(PDO::FETCH_ASSOC);
 
       return new Rencontre(
@@ -122,7 +114,6 @@ class Rencontre
         $res['points_equipe'],
         $res['points_adversaire']
       );
-
     } catch (Exception $e) {
       die('Erreur lors de la lecture de la rencontre : ' . $e->getMessage());
     }
