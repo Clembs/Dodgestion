@@ -4,6 +4,10 @@ Ce site web permet de gérer une équipe de dodgeball (balle au prisonnier). Pro
 
 ![License MIT](https://img.shields.io/github/license/Clembs/Mini-projet-R3.01) ![PHP 8.3.15](https://img.shields.io/badge/PHP-8.3.15-blue?logo=php&logoColor=white&color=4f5b93) ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-blue?logo=postgresql&logoColor=white&color=2f6792)
 
+## Accès en ligne
+
+Le projet est accessible en ligne à l'adresse suivante : [clembs.alwaysdata.net](https://clembs.alwaysdata.net/)
+
 ## Commandes
 
 Lancer le serveur PHP pour ouvrir le projet :

@@ -135,7 +135,7 @@ $mode = $joueurSelectionne ? 'modifier' : 'ajouter';
           <div class="buttons">
             <button id="dialog-close" class="button">Annuler</button>
             <button class="button danger"
-              formaction="/submit.php?form=supprimer-joueur&joueur=<?= $joueurSelectionne->getId() ?>" type="submit">
+              formaction="/submit.php?form=supprimer-joueur&joueur=<?= $joueurSelectionne?->getId() ?>" type="submit">
               Supprimer
             </button>
           </div>
