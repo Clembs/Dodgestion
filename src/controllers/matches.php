@@ -51,10 +51,6 @@ class ControleurMatches
         'label' => 'Informations générales',
         'file' => '/../views/matches/infos.php'
       ],
-      'resultats' => [
-        'label' => 'Résultats',
-        'file' => '/../views/matches/resultats.php'
-      ],
       'joueurs' => [
         'label' => 'Joueurs',
         'file' => '/../views/matches/joueurs.php'
@@ -94,10 +90,9 @@ class ControleurMatches
 
     // On requiert le layout pour afficher la page
     require __DIR__ . '/../views/layout.php';
-
   }
 
-  public static function ajouterParticipation(string $matchId, array $data)
+  public static function ajouterParticipation(string $matchId, array $data): void
   {
     if (!isset($matchId)) {
       require __DIR__ . '/../views/404.php';

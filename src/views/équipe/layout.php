@@ -32,8 +32,6 @@
         <li>
           <a class="joueur" href="?page=équipe&joueur=<?= $id ?>"
             aria-current="<?= $joueurSelectionne?->getId() === $joueur->getId() ? 'page' : 'false' ?>">
-            <!-- TODO: ajouter la photo -->
-
             <div class="text">
               <div class="player-name">
                 <?= $joueur->getPrenom() ?>   <?= $joueur->getNom() ?>

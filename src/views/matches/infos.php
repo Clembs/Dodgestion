@@ -6,7 +6,7 @@
 
 <?php ob_start(); ?>
 
-<form action="/submit.php/?form=match-infos&match=<?= $rencontreSelectionnee->getId() ?>" method="post">
+<form action="/submit.php/?form=modifier-match&match=<?= $rencontreSelectionnee->getId() ?>" method="post">
   <div class="ligne">
     <label class="input" for="lieu">
       <div class="label">Lieu</div>

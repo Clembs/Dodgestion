@@ -27,13 +27,14 @@ CREATE TABLE sessions (
   FOREIGN KEY (id_utilisateur) REFERENCES utilisateurs(id_utilisateur)
 );
 
+CREATE TYPE RESULTAT_RENCONTRE AS ENUM ('VICTOIRE','DEFAITE');
+
 CREATE TABLE rencontres (
   id_rencontre SERIAL PRIMARY KEY,
   date_rencontre TIMESTAMP NOT NULL,
   lieu VARCHAR(50) NOT NULL,
   nom_adversaire VARCHAR(50) NOT NULL,
-  points_equipe INT,
-  points_adversaire INT
+  resultat RESULTAT_RENCONTRE NOT NULL,
 );
 
 CREATE TYPE POSITION_JOUEUR AS ENUM ('AVANT', 'ARRIERE');

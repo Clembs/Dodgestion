@@ -56,8 +56,10 @@
                 aria-current="<?= $rencontreSelectionnee !== null && $rencontreSelectionnee->getId() === $rencontre->getId() ? 'page' : 'false' ?>">
 
                 <div class="nom-adversaire">
-                  vs. <?= $rencontre->getNomAdversaire() ?> (<?= $rencontre->getPointsEquipe() ?> -
-                  <?= $rencontre->getPointsAdversaire() ?>)
+                  vs. <?= $rencontre->getNomAdversaire() ?> (<?= match ($rencontre->getResultat()) {
+                       ResultatRencontre::VICTOIRE => 'Victoire',
+                       ResultatRencontre::DEFAITE => 'Défaite',
+                     } ?>)
                 </div>
                 <div class="date subtext">
                   <?= $rencontre->getDate()->format('d/m/Y') ?>
@@ -77,20 +79,15 @@
   <div id="infos-match" class="surface">
     <div id="header">
       <div id="score">
-        <?php if ($rencontreSelectionnee->getPointsEquipe()): ?>
-          <div class="score-number"
-            aria-label=" <?= $rencontreSelectionnee->getPointsEquipe() ?> points pour votre équipe">
-            <?= $rencontreSelectionnee->getPointsEquipe() ?>
-          </div>
-        <?php endif; ?>
-
 
         <h2>Votre équipe vs. <?= $rencontreSelectionnee->getNomAdversaire() ?></h2>
 
-        <?php if ($rencontreSelectionnee->getPointsAdversaire()): ?>
-          <div class="score-number"
-            aria-label=" <?= $rencontreSelectionnee->getPointsAdversaire() ?> points pour l'adversaire">
-            <?= $rencontreSelectionnee->getPointsAdversaire() ?>
+        <?php if ($rencontreSelectionnee->getResultat()): ?>
+          <div id="resultat" class="<?= strtolower($rencontreSelectionnee->getResultat()->value) ?>">
+            <?= match ($rencontreSelectionnee->getResultat()) {
+              ResultatRencontre::VICTOIRE => 'Victoire',
+              ResultatRencontre::DEFAITE => 'Défaite'
+            } ?>
           </div>
         <?php endif; ?>
       </div>
@@ -249,7 +246,7 @@
   #header #infos {
     display: flex;
     flex-wrap: wrap;
-    gap: 1.5rem;
+    gap: 2.5rem;
   }
 
   #header #infos .subtext {
@@ -260,14 +257,23 @@
 
   #header #score {
     display: flex;
-    gap: 1rem;
+    flex-direction: column;
     align-items: center;
     text-align: center;
   }
 
-  #header #score .score-number {
-    font-size: 2.5rem;
+  #header #resultat {
+    font-size: 2rem;
+    margin: 0;
     font-weight: 700;
+  }
+
+  #header #resultat.victoire {
+    color: var(--color-primary);
+  }
+
+  #header #resultat.defaite {
+    color: var(--color-danger);
   }
 
   #nav-tabs ul {
