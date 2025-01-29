@@ -126,7 +126,7 @@ $mode = $joueurSelectionne ? 'modifier' : 'ajouter';
         </label>
       </div>
 
-      <?php if (!$aJoue): ?>
+      <?php if ($joueurSelectionne && !$aJoue): ?>
 
         <dialog id="delete-dialog" class="surface">
           <h2>Supprimer le joueur</h2>
@@ -144,13 +144,13 @@ $mode = $joueurSelectionne ? 'modifier' : 'ajouter';
       <?php endif; ?>
 
       <div class="buttons">
-        <?php if (!$aJoue): ?>
+        <?php if ($joueurSelectionne && !$aJoue): ?>
           <button id="delete-button" class="button danger" type="button">
             Supprimer
           </button>
         <?php endif; ?>
 
-        <button class="button" type="reset">Annuler</button>
+        <button class="button" type="reset">Réinitialiser la saisie</button>
         <button class="button primary" type="submit">Enregistrer</button>
       </div>
     </form>
