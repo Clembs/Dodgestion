@@ -160,4 +160,15 @@ class Rencontre
       die('Erreur lors de la mise à jour de la rencontre : ' . $e->getMessage());
     }
   }
+
+  public function delete(): void
+  {
+    try {
+      $linkpdo = Database::getPDO();
+      $req = $linkpdo->prepare("DELETE FROM rencontres WHERE id_rencontre = :id_rencontre;");
+      $req->execute(['id_rencontre' => $this->id]);
+    } catch (Exception $e) {
+      die('Erreur lors de la suppression de la rencontre : ' . $e->getMessage());
+    }
+  }
 }

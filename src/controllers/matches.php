@@ -98,7 +98,7 @@ class ControleurMatches
     require __DIR__ . '/../views/layout.php';
   }
 
-  public static function addRencontre(array $data): void
+  public static function ajouterRencontre(array $data): void
   {
     $erreurs = [];
 
@@ -193,6 +193,38 @@ class ControleurMatches
 
     // On rafraîchit la page vers le match
     header("Location: /?page=matches&match=$matchId");
+  }
+
+  public static function supprimerRencontre(string $matchId): void
+  {
+    if (!isset($matchId)) {
+      require __DIR__ . '/../views/404.php';
+      return;
+    }
+
+    // On récupère la rencontre
+    $rencontre = Rencontre::read($matchId);
+
+    if ($rencontre === null) {
+      // Si la rencontre n'existe pas, on affiche une page 404
+      require __DIR__ . '/../views/404.php';
+      return;
+    }
+
+    // Si le match est passé ou a un résultat, on ne peut pas le supprimer
+    if ($rencontre->getDate() <= new DateTime() || $rencontre->getResultat() !== null) {
+      header("Location: /?page=matches&match=$matchId&erreurs=" . json_encode(['match' => 'Impossible de supprimer un match terminé ou avec un résultat.']));
+      return;
+    }
+
+    // On supprime les participations liées
+    Participation::deleteAllByRencontre($rencontre->getId());
+
+    // On supprime la rencontre
+    $rencontre->delete();
+
+    // On redirige vers la page des matches
+    header('Location: /?page=matches');
   }
 
   public static function ajouterParticipation(string $matchId, array $data): void

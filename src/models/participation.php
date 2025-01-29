@@ -176,4 +176,68 @@ class Participation
       die('Erreur lors de la lecture de la participation : ' . $e->getMessage());
     }
   }
+
+  public function update(
+    ?int $note,
+    ?string $commentaire,
+    ?PositionJoueur $position,
+    ?RoleJoueur $roleJoueur
+  ): void {
+    try {
+      $linkpdo = Database::getPDO();
+      $req = $linkpdo->prepare(
+        "UPDATE participations
+        SET note = :note, commentaire = :commentaire, position = :position, role_joueur = :role_joueur
+        WHERE id_participation = :id"
+      );
+
+      $this->note = $note ?? $this->note;
+      $this->commentaire = $commentaire ?? $this->commentaire;
+      $this->position = $position ?? $this->position;
+      $this->roleJoueur = $roleJoueur ?? $this->roleJoueur;
+
+      $req->execute([
+        'note' => $this->note,
+        'commentaire' => $this->commentaire,
+        'position' => $this->position->value,
+        'role_joueur' => $this->roleJoueur->value,
+        'id' => $this->id
+      ]);
+    } catch (Exception $e) {
+      die('Erreur lors de la mise à jour de la participation : ' . $e->getMessage());
+    }
+  }
+
+  public function delete(): void
+  {
+    try {
+      $linkpdo = Database::getPDO();
+      $req = $linkpdo->prepare('DELETE FROM participations WHERE id_participation = :id');
+      $req->execute(['id' => $this->id]);
+    } catch (Exception $e) {
+      die('Erreur lors de la suppression de la participation : ' . $e->getMessage());
+    }
+  }
+
+  public static function deleteAllByRencontre(int $idRencontre): void
+  {
+    try {
+      $linkpdo = Database::getPDO();
+      $req = $linkpdo->prepare('DELETE FROM participations WHERE id_rencontre = :id_rencontre');
+      $req->execute(['id_rencontre' => $idRencontre]);
+    } catch (Exception $e) {
+      die('Erreur lors de la suppression des participations : ' . $e->getMessage());
+    }
+  }
+
+  public static function deleteAllByJoueur(int $idJoueur): void
+  {
+    try {
+      $linkpdo = Database::getPDO();
+      $req = $linkpdo->prepare('DELETE FROM participations WHERE id_joueur = :id_joueur');
+      $req->execute(['id_joueur' => $idJoueur]);
+    } catch (Exception $e) {
+      die('Erreur lors de la suppression des participations : ' . $e->getMessage());
+    }
+  }
 }

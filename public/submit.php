@@ -21,10 +21,13 @@ switch ($_GET['form']) {
     ControleurMatches::ajouterParticipation($_GET['match'], $_POST);
     break;
   case 'ajouter-match':
-    ControleurMatches::addRencontre($_POST);
+    ControleurMatches::ajouterRencontre($_POST);
     break;
   case 'modifier-match':
     ControleurMatches::modifierRencontre($_GET['match'], $_POST);
+    break;
+  case 'supprimer-match':
+    ControleurMatches::supprimerRencontre($_GET['match']);
     break;
   default:
     require '../src/views/404.php';

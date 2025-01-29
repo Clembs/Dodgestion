@@ -20,6 +20,10 @@
   color: var(--color-background);
 }
 
+.button.danger {
+  background-color: var(--color-danger);
+}
+
 .button.icon {
   padding: 0.75rem;
 }
