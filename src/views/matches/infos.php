@@ -68,7 +68,7 @@ $mode = $rencontreSelectionnee ? 'modifier' : 'ajouter';
       </label>
     </div>
 
-    <?php if (!$estPassee): ?>
+    <?php if ($rencontreSelectionnee && !$estPassee): ?>
 
       <dialog id="delete-dialog" class="surface">
         <h2>Supprimer le match</h2>
@@ -77,7 +77,7 @@ $mode = $rencontreSelectionnee ? 'modifier' : 'ajouter';
         <div class="buttons">
           <button id="dialog-close" class="button">Annuler</button>
           <button class="button danger"
-            formaction="/submit.php?form=supprimer-match&match=<?= $rencontreSelectionnee->getId() ?>" type="submit">
+            formaction="/submit.php?form=supprimer-match&match=<?= $rencontreSelectionnee?->getId() ?>" type="submit">
             Supprimer
           </button>
         </div>
@@ -86,7 +86,7 @@ $mode = $rencontreSelectionnee ? 'modifier' : 'ajouter';
     <?php endif; ?>
 
     <div class="buttons">
-      <?php if (!$estPassee): ?>
+      <?php if ($rencontreSelectionnee && !$estPassee): ?>
         <button id="delete-button" class="button danger" type="button">
           Supprimer
         </button>
