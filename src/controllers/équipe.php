@@ -18,9 +18,6 @@ class ControleurÉquipe
     // On récupère les joueurs
     $joueurs = Joueur::getJoueurs();
 
-    // On récupère le joueur sélectionné (ou le premier joueur si aucun numéro de licence n'est fourni)
-    $joueurSelectionne = $joueurs[$numeroLicense ?? array_key_first($joueurs)];
-
     // Ne donner que les des joueurs filtrés selon $recherche (recherche par nom, prénom ou numéro de licence)
     $joueurs = array_filter(
       $joueurs,
@@ -32,6 +29,9 @@ class ControleurÉquipe
 
     // On trie les joueurs par leur clef (numéro de licence)
     ksort($joueurs);
+
+    // On récupère le joueur sélectionné (ou le premier joueur si aucun numéro de licence n'est fourni)
+    $joueurSelectionne = $joueurs[$numeroLicense ?? array_key_first($joueurs)];
 
     // Si le joueur sélectionné n'existe pas, on affiche une page 404
     if ($joueurSelectionne === null) {
