@@ -172,11 +172,7 @@
 
 <?php $content = ob_get_clean(); ?>
 
-
 <?php ob_start(); ?>
-<!-- Ajout des balises meta -->
-<meta name="description" content="" />
-
 <!-- CSS -->
 <style data-file="tableau-de-bord">
   body {
