@@ -92,7 +92,7 @@ $mode = $rencontreSelectionnee ? 'modifier' : 'ajouter';
         </button>
       <?php endif; ?>
 
-      <button class="button" type="reset">Effacer la saisie</button>
+      <button class="button" type="reset">Réinitialiser la saisie</button>
       <button class="button primary" type="submit">Enregistrer</button>
     </div>
   </form>
