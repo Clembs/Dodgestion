@@ -8,7 +8,7 @@ class ControleurÉquipe
   public static function playerInfo(
     ?string $numeroLicense,
     ?string $recherche = '',
-    $erreurs
+    array $erreurs
   ): void {
     if (!Session::isLoggedIn()) {
       header('Location: /?page=connexion');
@@ -30,17 +30,25 @@ class ControleurÉquipe
     // On trie les joueurs par leur clef (numéro de licence)
     ksort($joueurs);
 
-    // On récupère le joueur sélectionné (ou le premier joueur si aucun numéro de licence n'est fourni)
-    $joueurSelectionne = $joueurs[$numeroLicense ?? array_key_first($joueurs)];
+    if ($numeroLicense === 'nouveau') {
+      // Si le numéro de licence est 'nouveau', on met le $joueurSelectionne à null pour modifier l'URL du formulaire sur la page
+      $joueurSelectionne = null;
+    } else {
+      // On récupère le joueur sélectionné (ou le premier joueur si aucun numéro de licence n'est fourni)
+      $joueurSelectionne = $joueurs[$numeroLicense ?? array_key_first($joueurs)];
 
-    // Si le joueur sélectionné n'existe pas, on affiche une page 404
-    if ($joueurSelectionne === null) {
-      require __DIR__ . '/../views/404.php';
-      return;
+      // Si le joueur sélectionné n'existe pas, on affiche une page 404
+      if ($joueurSelectionne === null) {
+        require __DIR__ . '/../views/404.php';
+        return;
+      }
     }
 
-    // On affiche la page de l'équipe
-    require __DIR__ . '/../views/équipe.php';
+    // On requiert la page de formulaire de création/édition
+    require __DIR__ . '/../views/équipe/joueur.php';
+
+    // On requiert le layout d'équipe (càd la barre latérale et les trucs fixes)
+    require __DIR__ . '/../views/équipe/layout.php';
 
     // On définit le titre de la page (pour le layout)
     $title = 'Mon équipe';
