@@ -8,21 +8,25 @@ require_once '../src/controllers/authentification.php';
 require_once '../src/controllers/équipe.php';
 require_once '../src/controllers/matches.php';
 
-// on require la page correspondante avec la syntaxe match
-require_once match ($_GET['page']) {
-  // il suffit d'ajouter comme clef le nom de la page, et comme valeur le contrôleur
-  'connexion' => ControleurAuthentification::connexion($_GET['erreur'] ?? null),
-  'équipe' => ControleurÉquipe::playerInfo(
-    $_GET['joueur'],
-    $_GET['query'],
-    // on récupère les erreurs de validation
-    $_GET['erreurs'] ? json_decode($_GET['erreurs'], true) : []
-  ),
-  'matches' => ControleurMatches::matchInfo(
-    $_GET['match'],
-    $_GET['tab'] ?? 'infos',
-    $_GET['erreurs'] ? json_decode($_GET['erreurs'], true) : []
-  ),
-  // fallback sur une page 404
-  default => '../src/views/404.php',
-};
+switch ($_GET['page']) {
+  case 'connexion':
+    ControleurAuthentification::connexion($_GET['erreur']);
+    break;
+  case 'équipe':
+    ControleurÉquipe::playerInfo(
+      $_GET['joueur'],
+      $_GET['query'],
+      // on récupère les erreurs de validation
+      isset($_GET['erreurs']) ? json_decode($_GET['erreurs'], true) : []
+    );
+    break;
+  case 'matches':
+    ControleurMatches::matchInfo(
+      $_GET['match'],
+      $_GET['tab'] ?? 'infos',
+      $_GET['erreurs'] ? json_decode($_GET['erreurs'], true) : []
+    );
+    break;
+  default:
+    require_once '../src/views/404.php';
+}
