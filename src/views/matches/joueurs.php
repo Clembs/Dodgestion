@@ -5,82 +5,104 @@
  * @var Joueur[] $joueurs
  */
 
-$estPassee = $rencontreSelectionnee->getDate() <= new DateTime();
-?>
+$estPassee = $rencontreSelectionnee->getDate() <= new DateTime() || $rencontreSelectionnee->getResultat()
+  ?>
 
 <?php ob_start(); ?>
 
 <h3>Modifier les participants</h3>
 
 <table>
-  <!-- show mock data with the rows: player name/surname, position (avant/arrière) & titulaire/remplaçant -->
-  <tr>
-    <th>Joueur</th>
-    <th>Position</th>
-    <th>Rôle</th>
-    <?php if ($estPassee): ?>
-      <th>Note (sur 5)</th>
-      <th>Commentaire</th>
-    <?php endif; ?>
-  </tr>
-  <?php foreach ($participants as $participant): ?>
-    <form action="/submit.php/?form=modifier-participant&match=TODO" method="post" id="form-<?= $participant->getId() ?>">
-    </form>
+  <thead>
     <tr>
-      <td><?= $participant->getJoueur()->getPrenom() ?>   <?= $participant->getJoueur()->getNom() ?></td>
-      <td>
-        <select name="position" id="position" form="form-<?= $participant->getJoueur()->getId() ?>">
-          <?php foreach (PositionJoueur::cases() as $position): ?>
-            <option value="<?= $position->value ?>" <?= $participant->getPosition() === $position ? 'selected' : '' ?>>
-              <?= match ($position) {
-                PositionJoueur::AVANT => 'Avant',
-                PositionJoueur::ARRIERE => 'Arrière',
-              } ?>
-            </option>
-          <?php endforeach; ?>
-        </select>
-      </td>
-      <td>
-        <select name="role" id="role">
-          <?php foreach (RoleJoueur::cases() as $role): ?>
-            <option value="<?= $role->value ?>" <?= $participant->getRoleJoueur() === $role ? 'selected' : '' ?>>
-              <?= match ($role) {
-                RoleJoueur::TITULAIRE => 'Titulaire',
-                RoleJoueur::REMPLACANT => 'Remplaçant',
-              } ?>
-            </option>
-          <?php endforeach; ?>
-        </select>
-      </td>
-
+      <th>Joueur</th>
+      <th width="10%">Position</th>
+      <th width="10%">Rôle</th>
       <?php if ($estPassee): ?>
-        <td>
-          <input type="number" name="note" id="note" min="0" max="5">
-        </td>
-        <td>
-          <input type="text" name="commentaire" id="commentaire">
-        </td>
+        <th width="10%">Note (sur 5)</th>
+        <th width="30%">Commentaire</th>
       <?php endif; ?>
-
+      <th width="200px">Actions</th>
     </tr>
-  <?php endforeach; ?>
+  </thead>
+  <tbody>
+
+    <?php foreach ($participants as $participant): ?>
+      <?php $formId = "form-{$participant->getId()}"; ?>
+
+      <form action="/submit.php/?form=modifier-participant&match=TODO" method="post" id="<?= $formId ?>">
+      </form>
+      <tr>
+        <td><?= $participant->getJoueur()->getPrenom() ?>   <?= $participant->getJoueur()->getNom() ?></td>
+        <td>
+          <select name="position" id="position" form="<?= $formId ?>">
+            <?php foreach (PositionJoueur::cases() as $position): ?>
+              <option value="<?= $position->value ?>" <?= $participant->getPosition() === $position ? 'selected' : '' ?>>
+                <?= match ($position) {
+                  PositionJoueur::AVANT => 'Avant',
+                  PositionJoueur::ARRIERE => 'Arrière',
+                } ?>
+              </option>
+            <?php endforeach; ?>
+          </select>
+        </td>
+        <td>
+          <select name="role" id="role" form="<?= $formId ?>">
+            <?php foreach (RoleJoueur::cases() as $role): ?>
+              <option value="<?= $role->value ?>" <?= $participant->getRoleJoueur() === $role ? 'selected' : '' ?>>
+                <?= match ($role) {
+                  RoleJoueur::TITULAIRE => 'Titulaire',
+                  RoleJoueur::REMPLACANT => 'Remplaçant',
+                } ?>
+              </option>
+            <?php endforeach; ?>
+          </select>
+        </td>
+
+        <?php if ($estPassee): ?>
+          <td>
+            <input type="number" name="note" id="note" min="0" max="5">
+          </td>
+          <td>
+            <input type="text" name="commentaire" id="commentaire">
+          </td>
+        <?php endif; ?>
+
+        <td>
+          <div class="buttons">
+            <button class="button primary inline" type="submit" form="<?= $formId ?>">Enregistrer</button>
+            <a href="/submit.php/?form=supprimer-participant&match=<?= $rencontreSelectionnee->getId() ?>&participant=<?= $participant->getId() ?>"
+              class="button danger inline icon" aria-label="Supprimer le participant">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="lucide lucide-trash-2">
+                <path d="M3 6h18" />
+                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                <line x1="10" x2="10" y1="11" y2="17" />
+                <line x1="14" x2="14" y1="11" y2="17" />
+              </svg>
+            </a>
+          </div>
+        </td>
+
+      </tr>
+    <?php endforeach; ?>
+  </tbody>
 </table>
 
 <?php if (!$estPassee): ?>
   <form action="/submit.php/?form=ajouter-participant&match=<?= $rencontreSelectionnee->getId() ?>" method="post">
 
-
     <div class="ajouter">
       <h3>Ajouter un participant</h3>
     </div>
 
-
     <label class="input" for="joueur">
       <div class="label">Joueurs disponibles</div>
 
-      <select name="joueur-numero" id="joueur" multiple>
-        <!-- TODO: vérifier qu'il est pas inclus dans les participants -->
-        <?php foreach (array_filter($joueurs, fn(Joueur $j) => $j->getId() !== $joueurs) as $joueur): ?>
+      <select name="joueur-numero" id="joueur">
+        <?php foreach ($joueurs as $joueur): ?>
           <option value="<?= $joueur->getNumeroLicense() ?>">
             <?= $joueur->getPrenom() ?>     <?= $joueur->getNom() ?>
           </option>
@@ -162,6 +184,11 @@ $estPassee = $rencontreSelectionnee->getDate() <= new DateTime();
 
   td {
     background-color: var(--color-background);
+  }
+
+  td .buttons {
+    display: flex;
+    gap: 0.25rem;
   }
 
   .ligne {
