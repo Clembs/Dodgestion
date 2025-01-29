@@ -1,6 +1,4 @@
 <?php
-$page = $_GET['page'] ?? 'tableau-de-bord';
-
 $pages = [
   'équipe' => 'Mon équipe',
   'matches' => 'Mes matches',
@@ -17,7 +15,7 @@ $pages = [
     <ul>
       <?php foreach ($pages as $url => $pageTitle): ?>
         <li>
-          <a href="/?page=<?= $url ?>" aria-current="<?= $url === $page ? 'page' : 'false' ?>">
+          <a href="/?page=<?= $url ?>" aria-current="<?= $url === $_GET['page'] ? 'page' : 'false' ?>">
             <?= $pageTitle ?>
           </a>
         </li>
