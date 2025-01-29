@@ -56,7 +56,7 @@ class Rencontre
       );
 
       $req->execute([
-        'date_rencontre' => $this->getDate()->format('Y-m-d H:i:s'),
+        'date_rencontre' => $this->getDate()->format('Y-m-d'),
         'lieu' => $this->getLieu(),
         'nom_adversaire' => $this->getNomAdversaire(),
         'resultat' => $this->getResultat()->value,
@@ -139,7 +139,7 @@ class Rencontre
 
       $req->execute([
         'id_rencontre' => $this->id,
-        'date_rencontre' => $this->date,
+        'date_rencontre' => $this->date->format('Y-m-d'),
         'lieu' => $this->lieu,
         'nom_adversaire' => $this->nomAdversaire,
         'resultat' => $this->resultat->value,
