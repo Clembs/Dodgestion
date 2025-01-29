@@ -130,6 +130,35 @@ class Participation
     }
   }
 
+  /**
+   * @return Participation[]
+   */
+  public static function getAllByJoueur(int $idJoueur)
+  {
+    try {
+      $linkpdo = Database::getPDO();
+      $req = $linkpdo->prepare('SELECT * FROM participations WHERE id_joueur = :id_joueur');
+      $req->execute(['id_joueur' => $idJoueur]);
+      $res = $req->fetchAll(PDO::FETCH_ASSOC);
+
+      return array_map(
+        fn($participation) =>
+        new Participation(
+          $participation['id_participation'],
+          Joueur::read($idJoueur),
+          Rencontre::read($participation['id_rencontre']),
+          $participation['note'],
+          $participation['commentaire'],
+          PositionJoueur::from($participation['position']),
+          RoleJoueur::from($participation['role_joueur'])
+        ),
+        $res
+      );
+    } catch (Exception $e) {
+      die('Erreur lors de la lecture des participations : ' . $e->getMessage());
+    }
+  }
+
   public static function findByJoueurAndRencontre(int $idJoueur, int $idRencontre): ?Participation
   {
     try {

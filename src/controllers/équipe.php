@@ -5,7 +5,7 @@ require_once __DIR__ . '/../helpers/validation.php';
 
 class ControleurÉquipe
 {
-  public static function playerInfo(
+  public static function joueurInfo(
     ?string $numeroLicense,
     ?string $recherche = '',
     array $erreurs
@@ -29,7 +29,6 @@ class ControleurÉquipe
 
     // On trie les joueurs par leur clef (numéro de licence)
     ksort($joueurs);
-
     if ($numeroLicense === 'nouveau') {
       // Si le numéro de licence est 'nouveau', on met le $joueurSelectionne à null pour modifier l'URL du formulaire sur la page
       $joueurSelectionne = null;
@@ -42,6 +41,9 @@ class ControleurÉquipe
         require __DIR__ . '/../views/404.php';
         return;
       }
+
+      $participations = Participation::getAllByJoueur($joueurSelectionne->getId());
+      $aJoue = !empty($participations);
     }
 
     // On requiert la page de formulaire de création/édition
@@ -57,7 +59,7 @@ class ControleurÉquipe
     require __DIR__ . '/../views/layout.php';
   }
 
-  public static function addPlayer(array $data): void
+  public static function ajouterJoueur(array $data): void
   {
     $erreurs = [];
 
@@ -104,7 +106,7 @@ class ControleurÉquipe
     header("Location: /?page=équipe&joueur={$data['numero_license']}");
   }
 
-  public static function updatePlayerInfo(string $numeroLicense, array $data): void
+  public static function modifierJoueur(string $numeroLicense, array $data): void
   {
     if (!isset($numeroLicense)) {
       require __DIR__ . '/../views/404.php';
@@ -168,5 +170,28 @@ class ControleurÉquipe
 
     // On rafrachît la page
     header("Location: /?page=équipe&joueur={$joueur->getNumeroLicense()}");
+  }
+
+  public static function supprimerJoueur(string $idJoueur): void
+  {
+    if (!isset($idJoueur)) {
+      require __DIR__ . '/../views/404.php';
+      return;
+    }
+
+    // On récupère le joueur
+    $joueur = Joueur::read($idJoueur);
+
+    if ($joueur === null) {
+      // Si le joueur n'existe pas, on affiche une page 404
+      require __DIR__ . '/../views/404.php';
+      return;
+    }
+
+    // On supprime le joueur
+    $joueur->delete();
+
+    // On rafrachît la page vers la page d'équipe
+    header('Location: /?page=équipe');
   }
 }

@@ -13,7 +13,7 @@ switch ($_GET['page']) {
     ControleurAuthentification::connexion($_GET['erreur']);
     break;
   case 'équipe':
-    ControleurÉquipe::playerInfo(
+    ControleurÉquipe::joueurInfo(
       $_GET['joueur'],
       $_GET['query'],
       // on récupère les erreurs de validation

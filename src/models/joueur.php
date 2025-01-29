@@ -259,4 +259,15 @@ class Joueur
       die('Erreur lors de la mise à jour du joueur : ' . $e->getMessage());
     }
   }
+
+  public function delete(): void
+  {
+    try {
+      $linkpdo = Database::getPDO();
+      $req = $linkpdo->prepare('DELETE FROM joueurs WHERE id_joueur = :id_joueur');
+      $req->execute(['id_joueur' => $this->id]);
+    } catch (Exception $e) {
+      die('Erreur lors de la suppression du joueur : ' . $e->getMessage());
+    }
+  }
 }

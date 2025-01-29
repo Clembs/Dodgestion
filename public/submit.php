@@ -12,10 +12,13 @@ switch ($_GET['form']) {
     ControleurAuthentification::connecter($_POST['email'], $_POST['mot_de_passe']);
     break;
   case 'ajouter-joueur':
-    ControleurÉquipe::addPlayer($_POST);
+    ControleurÉquipe::ajouterJoueur($_POST);
     break;
   case 'modifier-joueur':
-    ControleurÉquipe::updatePlayerInfo($_GET['joueur'], $_POST);
+    ControleurÉquipe::modifierJoueur($_GET['joueur'], $_POST);
+    break;
+  case 'supprimer-joueur':
+    ControleurÉquipe::supprimerJoueur($_GET['joueur']);
     break;
   case 'ajouter-participant':
     ControleurMatches::ajouterParticipation($_GET['match'], $_POST);

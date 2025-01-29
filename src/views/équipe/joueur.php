@@ -2,6 +2,7 @@
 /**
  * @var ?Joueur $joueurSelectionne
  * @var array $erreurs
+ * @var bool $aJoue
  */
 
 $mode = $joueurSelectionne ? 'modifier' : 'ajouter';
@@ -125,12 +126,53 @@ $mode = $joueurSelectionne ? 'modifier' : 'ajouter';
         </label>
       </div>
 
+      <?php if (!$aJoue): ?>
+
+        <dialog id="delete-dialog" class="surface">
+          <h2>Supprimer le joueur</h2>
+          <p>Êtes-vous sûr de vouloir supprimer ce joueur ?</p>
+
+          <div class="buttons">
+            <button id="dialog-close" class="button">Annuler</button>
+            <button class="button danger"
+              formaction="/submit.php?form=supprimer-joueur&joueur=<?= $joueurSelectionne->getId() ?>" type="submit">
+              Supprimer
+            </button>
+          </div>
+        </dialog>
+
+      <?php endif; ?>
+
       <div class="buttons">
+        <?php if (!$aJoue): ?>
+          <button id="delete-button" class="button danger" type="button">
+            Supprimer
+          </button>
+        <?php endif; ?>
+
         <button class="button" type="reset">Annuler</button>
         <button class="button primary" type="submit">Enregistrer</button>
       </div>
     </form>
 </div>
+
+<!-- Un chouïa de JavaScript pour pouvoir gérer l'ouverture/la fermeture des boîtes de dialogue -->
+<script lang="javascript">
+  /** @type {HTMLButtonElement} */
+  const deleteButton = document.querySelector('#delete-button');
+  /** @type {HTMLDialogElement} */
+  const deleteDialog = document.querySelector('#delete-dialog');
+  /** @type {HTMLButtonElement} */
+  const closeDialogButton = document.querySelector('#dialog-close');
+
+  deleteButton.addEventListener('click', (e) => {
+    deleteDialog.showModal();
+  });
+
+  closeDialogButton.addEventListener('click', (e) => {
+    deleteDialog.open && deleteDialog.close();
+  });
+</script>
 
 <?php $slot = ob_get_clean(); ?>
 
@@ -167,6 +209,20 @@ $mode = $joueurSelectionne ? 'modifier' : 'ajouter';
     gap: 1rem;
     justify-content: flex-end;
     margin-top: auto;
+  }
+
+  dialog {
+    background: var(--color-background) !important;
+    color: var(--color-text);
+  }
+
+  dialog[open] {
+    display: flex;
+    flex-direction: column;
+  }
+
+  dialog[open]::backdrop {
+    background: rgba(0, 0, 0, 0.5);
   }
 </style>
 <?php $head = isset($head) ? $head . ob_get_clean() : ob_get_clean() ?>
