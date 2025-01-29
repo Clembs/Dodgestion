@@ -106,8 +106,8 @@ $mode = $joueurSelectionne ? 'modifier' : 'ajouter';
 
         <label class="input" for="poids">
           <div class="label">Poids (en kg)</div>
-          <input type="number" name="poids" id="poids" value="<?= $joueurSelectionne?->getPoids() || '' ?>" min="20"
-            max="200" required>
+          <input type="number" name="poids" id="poids" value="<?= $joueurSelectionne?->getPoids() ?>" min="40" max="200"
+            required>
 
           <?php if (isset($erreurs['poids'])): ?>
             <div class="error"><?= $erreurs['poids'] ?></div>
@@ -117,7 +117,7 @@ $mode = $joueurSelectionne ? 'modifier' : 'ajouter';
       <div class="ligne">
         <label class="input" for="note">
           <div class="label">Note</div>
-          <textarea maxlength="2000" name="note" id="note"><?= $joueurSelectionne?->getNote() || '' ?></textarea>
+          <textarea maxlength="2000" name="note" id="note"><?= $joueurSelectionne?->getNote() ?></textarea>
 
           <?php if (isset($erreurs['note'])): ?>
             <div class="error"><?= $erreurs['note'] ?></div>

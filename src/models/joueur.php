@@ -13,7 +13,7 @@ class Joueur
 {
   // Constructeur
   public function __construct(
-    private ?int $id,
+    private int $id,
     private string $prenom,
     private string $nom,
     private string $numeroLicense,
@@ -26,14 +26,9 @@ class Joueur
   }
 
   // Getters/Setters
-  public function getId(): ?int
+  public function getId(): int
   {
     return $this->id;
-  }
-
-  public function setId(int $id): void
-  {
-    $this->id = $id;
   }
 
   public function getNom(): string
@@ -76,8 +71,16 @@ class Joueur
     return $this->statut;
   }
 
-  public function create(): void
-  {
+  public static function create(
+    string $prenom,
+    string $nom,
+    string $numeroLicense,
+    DateTime $dateNaissance,
+    int $taille,
+    int $poids,
+    ?string $note,
+    StatutJoueur $statut
+  ): Joueur {
     try {
       $linkpdo = Database::getPDO();
 
@@ -87,15 +90,27 @@ class Joueur
       );
 
       $req->execute([
-        'prenom' => $this->getPrenom(),
-        'nom' => $this->getNom(),
-        'numero_license' => $this->getNumeroLicense(),
-        'date_naissance' => $this->getDateNaissance(),
-        'taille' => $this->getTaille(),
-        'poids' => $this->getPoids(),
-        'note' => $this->getNote(),
-        'statut' => $this->getStatut()
+        'prenom' => $prenom,
+        'nom' => $nom,
+        'numero_license' => $numeroLicense,
+        'date_naissance' => $dateNaissance->format('Y-m-d'),
+        'taille' => $taille,
+        'poids' => $poids,
+        'note' => $note,
+        'statut' => $statut->value
       ]);
+
+      return new Joueur(
+        $linkpdo->lastInsertId(),
+        $prenom,
+        $nom,
+        $numeroLicense,
+        $dateNaissance,
+        $taille,
+        $poids,
+        $note,
+        $statut,
+      );
     } catch (Exception $e) {
       die('Erreur lors de la création du joueur : ' . $e->getMessage());
     }
@@ -139,7 +154,7 @@ class Joueur
 
   public static function findByNumeroLicense(
     string $numeroLicense
-  ): Joueur {
+  ): ?Joueur {
     try {
       $linkpdo = Database::getPDO();
       $req = $linkpdo->prepare('SELECT * FROM joueurs WHERE numero_license = :numero_license');
@@ -149,6 +164,10 @@ class Joueur
       ]);
 
       $res = $req->fetch(PDO::FETCH_ASSOC);
+
+      if (!$res) {
+        return null;
+      }
 
       return new Joueur(
         $res['id_joueur'],
@@ -195,8 +214,16 @@ class Joueur
     }
   }
 
-  public function update(array $data): void
-  {
+  public function update(
+    ?string $prenom,
+    ?string $nom,
+    ?string $numeroLicense,
+    ?DateTime $dateNaissance,
+    ?int $taille,
+    ?int $poids,
+    ?string $note,
+    ?StatutJoueur $statut
+  ): void {
     try {
       $linkpdo = Database::getPDO();
       $req = $linkpdo->prepare(
@@ -206,27 +233,28 @@ class Joueur
         WHERE id_joueur = :id_joueur"
       );
 
+      // On met à jour les données du joueur
+      $this->prenom = $prenom ?? $this->prenom;
+      $this->nom = $nom ?? $this->nom;
+      $this->numeroLicense = $numeroLicense ?? $this->numeroLicense;
+      $this->dateNaissance = $dateNaissance ?? $this->dateNaissance;
+      $this->taille = $taille ?? $this->taille;
+      $this->poids = $poids ?? $this->poids;
+      $this->note = $note ?? $this->note;
+      $this->statut = $statut ?? $this->statut;
+
       $req->execute([
-        'id_joueur' => $this->getId(),
-        'prenom' => $data['prenom'],
-        'nom' => $data['nom'],
-        'numero_license' => $data['numero_license'],
-        'date_naissance' => $data['date_naissance'],
-        'taille' => $data['taille'],
-        'poids' => $data['poids'],
-        'note' => $data['note'],
-        'statut' => $data['statut']
+        'id_joueur' => $this->id,
+        'prenom' => $this->prenom,
+        'nom' => $this->nom,
+        'numero_license' => $this->numeroLicense,
+        'date_naissance' => $this->dateNaissance->format('Y-m-d'),
+        'taille' => $this->taille,
+        'poids' => $this->poids,
+        'note' => $this->note,
+        'statut' => $this->statut->value
       ]);
 
-      // On met à jour les données du joueur
-      $this->prenom = $data['prenom'];
-      $this->nom = $data['nom'];
-      $this->numeroLicense = $data['numero_license'];
-      $this->dateNaissance = new DateTime($data['date_naissance']);
-      $this->taille = $data['taille'];
-      $this->poids = $data['poids'];
-      $this->note = $data['note'];
-      $this->statut = StatutJoueur::from($data['statut']);
     } catch (Exception $e) {
       die('Erreur lors de la mise à jour du joueur : ' . $e->getMessage());
     }

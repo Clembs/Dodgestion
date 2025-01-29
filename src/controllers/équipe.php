@@ -57,6 +57,57 @@ class ControleurÉquipe
     require __DIR__ . '/../views/layout.php';
   }
 
+  public static function addPlayer(array $data): void
+  {
+    $erreurs = [];
+
+    $joueurExistant = Joueur::findByNumeroLicense($data['numero_license']);
+
+    if ($joueurExistant !== null) {
+      $erreurs['numero_license'] = 'Un joueur avec ce numéro de license existe déjà';
+    }
+    if (
+      !in_array($data['statut'], array_map(
+        fn($c) => $c->value,
+        StatutJoueur::cases()
+      ), true)
+    ) {
+      $erreurs['statut'] = 'Statut invalide';
+    }
+    if (!Validation::validateStringLength($data['prenom'], 1, 50)) {
+      $erreurs['prenom'] = 'Prénom doit être compris entre 1 et 50 caractères';
+    }
+    if (!Validation::validateStringLength($data['nom'], 1, 50)) {
+      $erreurs['nom'] = 'Nom doit être compris entre 1 et 50 caractères';
+    }
+    if (!Validation::validateNumber($data['taille'], 50, 250)) {
+      $erreurs['taille'] = 'Taille doit être comprise entre 50 et 250 cm';
+    }
+    if (!Validation::validateNumber($data['poids'], 40, 200)) {
+      $erreurs['poids'] = 'Poids doit être compris entre 40 et 200 kg';
+    }
+
+    // S'il y a des erreurs, on les affiche avant de créer le joueur
+    if (!empty($erreurs)) {
+      header("Location: /?page=équipe&joueur=nouveau&erreurs=" . json_encode($erreurs));
+      return;
+    }
+
+    // On crée le joueur
+    Joueur::create(
+      prenom: $data['prenom'],
+      nom: $data['nom'],
+      numeroLicense: $data['numero_license'],
+      dateNaissance: new DateTime($data['date_naissance']),
+      taille: $data['taille'],
+      poids: $data['poids'],
+      note: $data['note'],
+      statut: StatutJoueur::from($data['statut'])
+    );
+
+    // On rafrachît la page vers le joueur en question
+    header("Location: /?page=équipe&joueur={$data['numero_license']}");
+  }
 
   public static function updatePlayerInfo(string $numeroLicense, array $data): void
   {
@@ -65,16 +116,21 @@ class ControleurÉquipe
       return;
     }
 
+    $erreurs = [];
+
     // On récupère le joueur
     $joueur = Joueur::findByNumeroLicense($numeroLicense);
 
     if ($joueur === null) {
       // Si le joueur n'existe pas, on affiche une page 404
-      require __DIR__ . '/../views/404.php';
-      return;
+      $erreurs['numero_license'] = 'Joueur introuvable';
     }
 
-    $erreurs = [];
+    $joueurExistant = Joueur::findByNumeroLicense($data['numero_license']);
+
+    if ($joueurExistant !== null && $joueurExistant->getId() !== $joueur->getId()) {
+      $erreurs['numero_license'] = 'Un autre joueur avec ce numéro de license existe déjà';
+    }
 
     if (
       !in_array($data['statut'], array_map(
@@ -98,13 +154,22 @@ class ControleurÉquipe
     }
 
     // S'il y a des erreurs, on les affiche avant de mettre à jour le joueur
-    if (count($erreurs) > 0) {
+    if (!empty($erreurs)) {
       header("Location: /?page=équipe&joueur={$joueur->getNumeroLicense()}&erreurs=" . json_encode($erreurs));
       return;
     }
 
     // On met à jour les informations du joueur
-    $joueur->update($data);
+    $joueur->update(
+      prenom: $data['prenom'],
+      nom: $data['nom'],
+      numeroLicense: $data['numero_license'],
+      dateNaissance: new DateTime($data['date_naissance']),
+      taille: $data['taille'],
+      poids: $data['poids'],
+      note: $data['note'],
+      statut: StatutJoueur::from($data['statut'])
+    );
 
     // On rafrachît la page
     header("Location: /?page=équipe&joueur={$joueur->getNumeroLicense()}");

@@ -11,6 +11,9 @@ switch ($_GET['form']) {
   case 'connexion':
     ControleurAuthentification::connecter($_POST['email'], $_POST['mot_de_passe']);
     break;
+  case 'ajouter-joueur':
+    ControleurÉquipe::addPlayer($_POST);
+    break;
   case 'modifier-joueur':
     ControleurÉquipe::updatePlayerInfo($_GET['joueur'], $_POST);
     break;
