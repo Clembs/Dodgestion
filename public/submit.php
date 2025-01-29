@@ -23,6 +23,9 @@ switch ($_GET['form']) {
   case 'ajouter-participant':
     ControleurMatches::ajouterParticipation($_GET['match'], $_POST);
     break;
+  case 'modifier-participant':
+    ControleurMatches::modifierParticipation($_GET['participant'], $_POST);
+    break;
   case 'supprimer-participant':
     ControleurMatches::supprimerParticipation($_GET['participant']);
     break;

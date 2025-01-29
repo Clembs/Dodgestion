@@ -31,7 +31,7 @@ $estPassee = $rencontreSelectionnee->getDate() <= new DateTime() || $rencontreSe
       <?php $formId = "form-{$participant->getId()}"; ?>
 
       <form action="/submit.php/?form=modifier-participant&participant=<?= $participant->getId() ?>" method="post"
-        id="<?= $formId ?>">
+        id="<?= $formId ?>" name="<?= $formId ?>">
       </form>
       <tr>
         <td><?= $participant->getJoueur()->getPrenom() ?>   <?= $participant->getJoueur()->getNom() ?></td>
@@ -42,7 +42,7 @@ $estPassee = $rencontreSelectionnee->getDate() <= new DateTime() || $rencontreSe
               PositionJoueur::ARRIERE => 'Arrière',
             } ?>
           <?php else: ?>
-            <select name="position" id="position" form="<?= $formId ?>">
+            <select name="position" id="position" form="<?= $formId ?>" required>
               <?php foreach (PositionJoueur::cases() as $position): ?>
                 <option value="<?= $position->value ?>" <?= $participant->getPosition() === $position ? 'selected' : '' ?>>
                   <?= match ($position) {
@@ -61,7 +61,7 @@ $estPassee = $rencontreSelectionnee->getDate() <= new DateTime() || $rencontreSe
               RoleJoueur::REMPLACANT => 'Remplaçant',
             } ?>
           <?php else: ?>
-            <select name="role" id="role" form="<?= $formId ?>">
+            <select name="role" id="role" form="<?= $formId ?>" required>
               <?php foreach (RoleJoueur::cases() as $role): ?>
                 <option value="<?= $role->value ?>" <?= $participant->getRoleJoueur() === $role ? 'selected' : '' ?>>
                   <?= match ($role) {
@@ -77,19 +77,23 @@ $estPassee = $rencontreSelectionnee->getDate() <= new DateTime() || $rencontreSe
         <?php if ($estPassee): ?>
           <td>
             <label class="input">
-              <input type="number" name="note" id="note" min="0" max="5" value="<?= $participant->getNote() ?>">
+              <input type="number" name="note" id="note" min="0" max="5" value="<?= $participant->getNote() ?>" required
+                form="<?= $formId ?>">
             </label>
           </td>
           <td>
             <label class="input">
-              <textarea name="commentaire" id="commentaire" minlength="200"><?= $participant->getCommentaire() ?></textarea>
+              <textarea name="commentaire" id="commentaire" maxlength="255" required
+                form="<?= $formId ?>"><?= $participant->getCommentaire() ?></textarea>
             </label>
           </td>
         <?php endif; ?>
 
         <td>
           <div class="buttons">
-            <button class="button primary inline" type="submit" form="<?= $formId ?>">Enregistrer</button>
+            <button class="button primary inline" type="submit" form="<?= $formId ?>">
+              Enregistrer
+            </button>
 
             <?php if (!$estPassee): ?>
               <form action="/submit.php/?form=supprimer-participant&participant=<?= $participant->getId() ?>" method="POST">

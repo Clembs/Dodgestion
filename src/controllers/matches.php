@@ -308,15 +308,86 @@ class ControleurMatches
     header("Location: /?page=matches&match=$matchId&tab=joueurs");
   }
 
-  public static function supprimerParticipation(string $participantId)
+  public static function modifierParticipation(string $idParticipant, array $data): void
   {
-    if (!isset($participantId)) {
+    if (!isset($idParticipant)) {
       require __DIR__ . '/../views/404.php';
       return;
     }
 
     // On récupère la participation
-    $participation = Participation::read($participantId);
+    $participation = Participation::read($idParticipant);
+
+    if ($participation === null) {
+      // Si la participation n'existe pas, on affiche une page 404
+      require __DIR__ . '/../views/404.php';
+      return;
+    }
+
+    $rencontre = $participation->getRencontre();
+    $estPassee = $rencontre->getDate() <= new DateTime() || $rencontre->getResultat();
+
+    // On valide les données
+    $erreurs = [];
+
+    // On valide la note & le commentaire si le match est passé, ou le rôle et la position si le match est à venir
+    if ($estPassee) {
+      if (isset($data['note']) && !Validation::validateNumber($data['note'], 0, 5)) {
+        $erreurs['note'] = 'La note doit être comprise entre 0 et 5.';
+      }
+
+      if (isset($data['commentaire']) && !Validation::validateStringLength($data['commentaire'], 0, 255)) {
+        $erreurs['commentaire'] = 'Le commentaire doit être inférieur à 255 caractères.';
+      }
+
+      if (!empty($erreurs)) {
+        header("Location: /?page=matches&match=" . $participation->getRencontre()->getId() . "&tab=joueurs&participant=$idParticipant&erreurs=" . json_encode($erreurs));
+        return;
+      }
+
+      // On modifie la participation
+      $participation->update(
+        note: $data['note'] ?? null,
+        commentaire: $data['commentaire'] ?? null,
+        position: null,
+        roleJoueur: null
+      );
+    } else {
+      if (isset($data['position']) && !in_array($data['position'], ['AVANT', 'ARRIERE'])) {
+        $erreurs['position'] = 'La position est invalide.';
+      }
+
+      if (isset($data['role']) && !in_array($data['role'], ['TITULAIRE', 'REMPLACANT'])) {
+        $erreurs['role'] = 'Le rôle est invalide.';
+      }
+
+      if (!empty($erreurs)) {
+        header("Location: /?page=matches&match=" . $participation->getRencontre()->getId() . "&tab=joueurs&participant=$idParticipant&erreurs=" . json_encode($erreurs));
+        return;
+      }
+
+      // On modifie la participation
+      $participation->update(
+        note: null,
+        commentaire: null,
+        position: PositionJoueur::from($data['position']),
+        roleJoueur: RoleJoueur::from($data['role'])
+      );
+    }
+
+    // On rafraîchit la page vers la participation
+    header("Location: /?page=matches&match=" . $participation->getRencontre()->getId() . "&tab=joueurs");
+  }
+
+  public static function supprimerParticipation(string $idParticipant): void
+  {
+    if (!isset($idParticipant)) {
+      require __DIR__ . '/../views/404.php';
+      return;
+    }
+
+    // On récupère la participation
+    $participation = Participation::read($idParticipant);
 
     if ($participation === null) {
       // Si la participation n'existe pas, on affiche une page 404
