@@ -27,6 +27,9 @@ switch ($_GET['page']) {
       $_GET['erreurs'] ? json_decode($_GET['erreurs'], true) : []
     );
     break;
+  case 'deconnexion':
+    ControleurAuthentification::deconnecter();
+    break;
   default:
     require_once '../src/views/404.php';
 }
