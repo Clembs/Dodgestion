@@ -2,7 +2,7 @@
 /**
  * @var Rencontre[] $rencontresFutures
  * @var Rencontre[] $rencontresPassees
- * @var Rencontre $rencontreSelectionnee
+ * @var ?Rencontre $rencontreSelectionnee
  * @var array $tabs
  * @var string $currentTab
  */
@@ -25,7 +25,7 @@
           <?php foreach ($rencontresFutures as $rencontre): ?>
             <li>
               <a class="match" href="?page=matches&match=<?= $rencontre->getId() ?>"
-                aria-current="<?= $rencontreSelectionnee !== null && $rencontreSelectionnee->getId() === $rencontre->getId() ? 'page' : 'false' ?>">
+                aria-current="<?= $rencontreSelectionnee !== null && $rencontreSelectionnee?->getId() === $rencontre->getId() ? 'page' : 'false' ?>">
 
                 <div class="nom-adversaire">
                   vs. <?= $rencontre->getNomAdversaire() ?>
@@ -53,7 +53,7 @@
           <?php foreach ($rencontresPassees as $rencontre): ?>
             <li>
               <a class="match" href="?page=matches&match=<?= $rencontre->getId() ?>"
-                aria-current="<?= $rencontreSelectionnee !== null && $rencontreSelectionnee->getId() === $rencontre->getId() ? 'page' : 'false' ?>">
+                aria-current="<?= $rencontreSelectionnee !== null && $rencontreSelectionnee?->getId() === $rencontre->getId() ? 'page' : 'false' ?>">
 
                 <div class="nom-adversaire">
                   vs. <?= $rencontre->getNomAdversaire() ?> (<?= match ($rencontre->getResultat()) {
@@ -70,65 +70,74 @@
               </a>
             </li>
           <?php endforeach; ?>
+        </ul>
       </li>
-
     </ul>
+
+    <a href="/?page=matches&match=nouveau" class="button primary inline" id="nouveau-match">
+      Nouveau match
+    </a>
   </aside>
 
   <!-- Informations sur la rencontre sélectionnée -->
   <div id="infos-match" class="surface">
-    <div id="header">
-      <div id="score">
+    <?php if ($rencontreSelectionnee): ?>
+      <div id="header">
+        <div id="score">
+          <h2>Votre équipe vs. <?= $rencontreSelectionnee->getNomAdversaire() ?></h2>
 
-        <h2>Votre équipe vs. <?= $rencontreSelectionnee->getNomAdversaire() ?></h2>
+          <?php if ($rencontreSelectionnee->getResultat()): ?>
+            <div id="resultat" class="<?= strtolower($rencontreSelectionnee->getResultat()->value) ?>">
+              <?= match ($rencontreSelectionnee->getResultat()) {
+                ResultatRencontre::VICTOIRE => 'Victoire',
+                ResultatRencontre::DEFAITE => 'Défaite'
+              } ?>
+            </div>
+          <?php endif; ?>
+        </div>
 
-        <?php if ($rencontreSelectionnee->getResultat()): ?>
-          <div id="resultat" class="<?= strtolower($rencontreSelectionnee->getResultat()->value) ?>">
-            <?= match ($rencontreSelectionnee->getResultat()) {
-              ResultatRencontre::VICTOIRE => 'Victoire',
-              ResultatRencontre::DEFAITE => 'Défaite'
-            } ?>
+        <div id="infos">
+          <div class="subtext">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+              title="Lieu du match" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              class="lucide lucide-map-pin">
+              <path
+                d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
+              <circle cx="12" cy="10" r="3" />
+            </svg>
+            <p><?= $rencontreSelectionnee->getLieu() ?></p>
           </div>
-        <?php endif; ?>
-      </div>
 
-      <div id="infos">
-        <div class="subtext">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-            title="Lieu du match" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-            class="lucide lucide-map-pin">
-            <path
-              d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
-            <circle cx="12" cy="10" r="3" />
-          </svg>
-          <p><?= $rencontreSelectionnee->getLieu() ?></p>
-        </div>
-
-        <div class="subtext">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-            title="Date du match" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-            class="lucide lucide-calendar">
-            <path d="M8 2v4" />
-            <path d="M16 2v4" />
-            <rect width="18" height="18" x="3" y="4" rx="2" />
-            <path d="M3 10h18" />
-          </svg>
-          <p><?= $rencontreSelectionnee->getDate()->format('d/m/Y à H:i') ?></p>
+          <div class="subtext">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+              title="Date du match" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              class="lucide lucide-calendar">
+              <path d="M8 2v4" />
+              <path d="M16 2v4" />
+              <rect width="18" height="18" x="3" y="4" rx="2" />
+              <path d="M3 10h18" />
+            </svg>
+            <p><?= $rencontreSelectionnee->getDate()->format('d/m/Y à H:i') ?></p>
+          </div>
         </div>
 
       </div>
-    </div>
 
-    <nav id="nav-tabs">
-      <ul>
-        <?php foreach ($tabs as $tabKey => $tab): ?>
-          <a href="/?page=matches&match=<?= $rencontreSelectionnee->getId() ?>&tab=<?= $tabKey ?>" class="tab"
-            aria-current="<?= $tabKey === $currentTab ? 'page' : 'false' ?>">
-            <?= $tab['label'] ?>
-          </a>
-        <?php endforeach; ?>
-      </ul>
-    </nav>
+      <nav id="nav-tabs">
+        <ul>
+          <?php foreach ($tabs as $tabKey => $tab): ?>
+            <a href="/?page=matches&match=<?= $rencontreSelectionnee->getId() ?>&tab=<?= $tabKey ?>" class="tab"
+              aria-current="<?= $tabKey === $currentTab ? 'page' : 'false' ?>">
+              <?= $tab['label'] ?>
+            </a>
+          <?php endforeach; ?>
+        </ul>
+      </nav>
+    <?php else: ?>
+
+      <h2>Nouveau match</h2>
+
+    <?php endif; ?>
 
     <?= $slot ?>
   </div>
@@ -225,6 +234,10 @@
     color: var(--color-background);
   }
 
+  #nouveau-match {
+    align-self: center;
+  }
+
   /* Partie informations match */
   #infos-match {
     display: flex;
@@ -281,14 +294,27 @@
     gap: 1rem;
     list-style: none;
     padding: 0;
-    overflow-x: auto;
-    padding: 0 1.5rem;
     margin: 0 -1.5rem;
   }
 
-  #nav-tabs a {
+  #nav-tabs .tab {
+    position: relative;
     white-space: nowrap;
+    flex: 1;
+    text-align: center;
+    background-color: transparent;
+    color: var(--color-text);
+  }
 
+  #nav-tabs .tab[aria-current="page"]::after {
+    content: '';
+    display: block;
+    height: 2px;
+    background-color: var(--color-primary);
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    left: 0;
   }
 </style>
 

@@ -45,8 +45,12 @@ class Rencontre
   }
 
 
-  public function create(): void
-  {
+  public static function create(
+    DateTime $date,
+    string $lieu,
+    string $nomAdversaire,
+    ?ResultatRencontre $resultat
+  ): Rencontre {
     try {
       $linkpdo = Database::getPDO();
 
@@ -56,11 +60,19 @@ class Rencontre
       );
 
       $req->execute([
-        'date_rencontre' => $this->getDate()->format('Y-m-d H:i'),
-        'lieu' => $this->getLieu(),
-        'nom_adversaire' => $this->getNomAdversaire(),
-        'resultat' => $this->getResultat()->value,
+        'date_rencontre' => $date->format('Y-m-d H:i'),
+        'lieu' => $lieu,
+        'nom_adversaire' => $nomAdversaire,
+        'resultat' => $resultat?->value,
       ]);
+
+      return new Rencontre(
+        id: $linkpdo->lastInsertId(),
+        date: $date,
+        lieu: $lieu,
+        nomAdversaire: $nomAdversaire,
+        resultat: $resultat
+      );
     } catch (Exception $e) {
       die('Erreur lors de la création de la rencontre : ' . $e->getMessage());
     }
