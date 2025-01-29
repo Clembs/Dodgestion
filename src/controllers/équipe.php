@@ -66,12 +66,7 @@ class ControleurÉquipe
     if ($joueurExistant !== null) {
       $erreurs['numero_license'] = 'Un joueur avec ce numéro de license existe déjà';
     }
-    if (
-      !in_array($data['statut'], array_map(
-        fn($c) => $c->value,
-        StatutJoueur::cases()
-      ), true)
-    ) {
+    if (!StatutJoueur::tryFrom($data['statut'])) {
       $erreurs['statut'] = 'Statut invalide';
     }
     if (!Validation::validateStringLength($data['prenom'], 1, 50)) {
@@ -90,7 +85,7 @@ class ControleurÉquipe
     // S'il y a des erreurs, on les affiche avant de créer le joueur
     if (!empty($erreurs)) {
       header("Location: /?page=équipe&joueur=nouveau&erreurs=" . json_encode($erreurs));
-      return;
+      exit;
     }
 
     // On crée le joueur

@@ -17,15 +17,15 @@ class ControleurMatches
     // On récupère les rencontres
     $rencontres = Rencontre::getRencontres();
 
-    // On sépare les rencontres en deux tableaux : celles passées et celles à venir
+    // On sépare les rencontres en deux tableaux : celles passées ou avec un résultat et celles à venir
     $rencontresFutures = array_filter(
       $rencontres,
-      fn(Rencontre $rF) => $rF->getDate() > new DateTime()
+      fn(Rencontre $rF) => $rF->getDate() > new DateTime() && !$rF->getResultat()
     );
 
     $rencontresPassees = array_filter(
       $rencontres,
-      fn(Rencontre $rP) => $rP->getDate() <= new DateTime()
+      fn(Rencontre $rP) => $rP->getDate() <= new DateTime() || !!$rP->getResultat()
     );
 
     // On récupère la rencontre sélectionnée (ou la rencontre la plus récente si aucun match n'est fourni)
@@ -90,6 +90,65 @@ class ControleurMatches
 
     // On requiert le layout pour afficher la page
     require __DIR__ . '/../views/layout.php';
+  }
+
+  public static function modifierRencontre(string $matchId, array $data): void
+  {
+    if (!isset($matchId)) {
+      require __DIR__ . '/../views/404.php';
+      return;
+    }
+
+    // On récupère la rencontre
+    $rencontre = Rencontre::read($matchId);
+
+    if ($rencontre === null) {
+      // Si la rencontre n'existe pas, on affiche une page 404
+      require __DIR__ . '/../views/404.php';
+      return;
+    }
+
+    // On valide les données
+    $erreurs = [];
+
+    foreach (['nom-adversaire', 'lieu', 'date'] as $key) {
+      if (!isset($data[$key])) {
+        $erreurs[$key] = 'Ce champ est requis.';
+      }
+    }
+
+    if (!Validation::validateStringLength($data['nom-adversaire'], 2, 50)) {
+      $erreurs['nom-adversaire'] = "Le nom de l'adversaire doit être compris entre 2 et 50 caractères.";
+    }
+
+    if (!Validation::validateStringLength($data['lieu'], 2, 50)) {
+      $erreurs['lieu'] = "Le nom du lieu doit être compris entre 2 et 50 caractères.";
+    }
+
+    if (isset($data['resultat']) && $data['resultat'] === 'NON-DEFINI' && $rencontre->getDate() <= new DateTime()) {
+      $erreurs['resultat'] = 'Le résultat ne peut être non-défini car il est terminé.';
+    }
+
+    if (isset($data['resultat']) && $data['resultat'] !== 'NON-DEFINI' && !ResultatRencontre::tryFrom($data['resultat'])) {
+      $erreurs['resultat'] = 'Résultat invalide.';
+    }
+
+    // S'il y a des erreurs, on les affiche avant de modifier le match
+    if (!empty($erreurs)) {
+      header("Location: /?page=matches&match=$matchId&erreurs=" . json_encode($erreurs));
+      exit;
+    }
+
+    // On modifie le match
+    $rencontre->update(
+      nomAdversaire: $data['nom-adversaire'],
+      lieu: $data['lieu'],
+      date: new DateTime($data['date']),
+      resultat: (!isset($data['resultat']) || $data['resultat'] === 'NON-DEFINI') ? null : ResultatRencontre::from($data['resultat'])
+    );
+
+    // On rafraîchit la page vers le match
+    header("Location: /?page=matches&match=$matchId");
   }
 
   public static function ajouterParticipation(string $matchId, array $data): void

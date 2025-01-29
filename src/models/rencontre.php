@@ -56,7 +56,7 @@ class Rencontre
       );
 
       $req->execute([
-        'date_rencontre' => $this->getDate()->format('Y-m-d'),
+        'date_rencontre' => $this->getDate()->format('Y-m-d H:i'),
         'lieu' => $this->getLieu(),
         'nom_adversaire' => $this->getNomAdversaire(),
         'resultat' => $this->getResultat()->value,
@@ -121,7 +121,7 @@ class Rencontre
     ?DateTime $date,
     ?string $lieu,
     ?string $nomAdversaire,
-    ?ResultatRencontre $resultat
+    ResultatRencontre|null $resultat
   ): void {
     try {
       $linkpdo = Database::getPDO();
@@ -135,14 +135,14 @@ class Rencontre
       $this->date = $date ?? $this->date;
       $this->lieu = $lieu ?? $this->lieu;
       $this->nomAdversaire = $nomAdversaire ?? $this->nomAdversaire;
-      $this->resultat = $resultat ?? $this->resultat;
+      $this->resultat = $resultat === null ? null : $resultat ?? $this->resultat;
 
       $req->execute([
         'id_rencontre' => $this->id,
-        'date_rencontre' => $this->date->format('Y-m-d'),
+        'date_rencontre' => $this->date->format('Y-m-d H:i'),
         'lieu' => $this->lieu,
         'nom_adversaire' => $this->nomAdversaire,
-        'resultat' => $this->resultat->value,
+        'resultat' => $this->resultat?->value,
       ]);
     } catch (Exception $e) {
       die('Erreur lors de la mise à jour de la rencontre : ' . $e->getMessage());
