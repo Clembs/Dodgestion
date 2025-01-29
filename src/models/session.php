@@ -1,4 +1,7 @@
 <?php
+require_once __DIR__ . '/database.php';
+require_once __DIR__ . '/utilisateur.php';
+
 class Session
 {
   private const int SESSION_TEMPS_VIE = 7 * 24 * 60 * 60; // Durée de vie de la session en secondes (7 jours)
