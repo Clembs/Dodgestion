@@ -2,14 +2,14 @@
 // Routeur basique
 
 // Les liens se font vers /?page=nom-de-la-page
-$page = $_GET['page'] ?? 'équipe';
+$_GET['page'] ??= 'équipe';
 
 require_once '../src/controllers/authentification.php';
 require_once '../src/controllers/équipe.php';
 require_once '../src/controllers/matches.php';
 
 // on require la page correspondante avec la syntaxe match
-require_once match ($page) {
+require_once match ($_GET['page']) {
   // il suffit d'ajouter comme clef le nom de la page, et comme valeur le contrôleur
   'connexion' => ControleurAuthentification::connexion($_GET['erreur'] ?? null),
   'équipe' => ControleurÉquipe::playerInfo(
