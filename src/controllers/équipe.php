@@ -1,4 +1,7 @@
 <?php
+require_once __DIR__ . '/../models/session.php';
+require_once __DIR__ . '/../models/joueur.php';
+require_once __DIR__ . '/../helpers/validation.php';
 
 class ControleurÉquipe
 {
@@ -7,7 +10,10 @@ class ControleurÉquipe
     ?string $recherche = '',
     $erreurs
   ): void {
-    require __DIR__ . '/../models/joueur.php';
+    if (!Session::isLoggedIn()) {
+      header('Location: /?page=connexion');
+      return;
+    }
 
     // On récupère les joueurs
     $joueurs = Joueur::getJoueurs();
@@ -46,9 +52,6 @@ class ControleurÉquipe
 
   public static function updatePlayerInfo(string $numeroLicense, array $data): void
   {
-    require __DIR__ . '/../helpers/validation.php';
-    require __DIR__ . '/../models/joueur.php';
-
     if (!isset($numeroLicense)) {
       require __DIR__ . '/../views/404.php';
       return;

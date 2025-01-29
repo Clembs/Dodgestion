@@ -1,89 +1,76 @@
 <?php
-
 /**
  * @var string $email
- * @var array $erreurs
+ * @var string $erreur
  */
-
-// Initialisation des variables pour les champs de saisie et erreurs
-$email = $_POST['email'] ?? '';
-$motDePasse = $_POST['mot_de_passe'] ?? '';
-$erreurs = [];
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  try {
-    // Validation des champs
-    if (empty($email)) {
-      $erreurs[] = "L'adresse email est obligatoire.";
-    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-      $erreurs[] = "Le format de l'adresse email est invalide.";
-    }
-
-    if (empty($motDePasse)) {
-      $erreurs[] = "Le mot de passe est obligatoire.";
-    }
-
-    // Si aucune erreur, tentative de connexion
-    if (empty($erreurs)) {
-      ConnexionController::seConnecter($email, $motDePasse);
-      exit; // Redirection effectuée par le contrôleur
-    }
-  } catch (Exception $e) {
-    $erreurs[] = $e->getMessage(); // Capture des erreurs du contrôleur ou du modèle
-  }
-}
 ?>
 
 <?php ob_start(); ?>
 
 <main>
-  <div class="surface" id="form-connexion">
-    <h1>Connexion</h1>
-
-    <!-- Affichage des erreurs -->
-    <?php if (!empty($erreurs)): ?>
-      <div class="error-list">
-        <ul>
-          <?php foreach ($erreurs as $erreur): ?>
-            <li><?= htmlspecialchars($erreur) ?></li>
-          <?php endforeach; ?>
-        </ul>
-      </div>
-    <?php endif; ?>
+  <div class="surface">
+    <h1>Connexion à Dodgestion</h1>
 
     <!-- Formulaire de connexion -->
-    <form method="POST" action="?page=connexion">
-      <div class="ligne">
-        <label class="input" for="email">
-          <div class="label">Email</div>
-          <input
-            type="email"
-            name="email"
-            id="email"
-            value="<?= htmlspecialchars($email) ?>"
-            required
-            maxlength="100">
-        </label>
-      </div>
+    <form method="POST" action="/submit.php?form=connexion">
+      <label class="input full" for="email">
+        <div class="label">Email</div>
+        <input type="email" name="email" id="email" value="<?= htmlspecialchars($email) ?>" required maxlength="100">
+      </label>
 
-      <div class="ligne">
-        <label class="input" for="mot_de_passe">
-          <div class="label">Mot de passe</div>
-          <input
-            type="password"
-            name="mot_de_passe"
-            id="mot_de_passe"
-            required
-            maxlength="100">
-        </label>
-      </div>
+      <label class="input full" for="mot_de_passe">
+        <div class="label">Mot de passe</div>
+        <input type="password" name="mot_de_passe" id="mot_de_passe" required maxlength="100">
+      </label>
 
-      <div class="buttons">
-        <button class="button" type="reset">Annuler</button>
-        <button class="button primary" type="submit">Se connecter</button>
-      </div>
+      <?php if (!empty($erreur)): ?>
+        <div class="error">
+          <?= $erreur ?>
+        </div>
+      <?php endif; ?>
+
+      <button class="button primary" type="submit">Se connecter</button>
+      <button id="creer-compte" class="button inline" disabled>Créer un compte</button>
     </form>
   </div>
 </main>
 
 <?php $content = ob_get_clean(); ?>
+
+<?php ob_start(); ?>
+
+<style data-file="connexion">
+  main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+  }
+
+  h1 {
+    margin: 0;
+  }
+
+  .surface {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding: 1.5rem;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .button {
+    margin-top: 1rem;
+  }
+
+  #creer-compte {
+    align-self: flex-end;
+  }
+</style>
+
+<?php $head .= ob_get_clean(); ?>

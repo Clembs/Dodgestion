@@ -7,6 +7,7 @@
   cursor: pointer;
   height: max-content;
   user-select: none;
+  text-decoration: none;
 }
 
 .button.primary {
@@ -16,6 +17,18 @@
 
 .button.icon {
   padding: 0.75rem;
+}
+
+.button.inline {
+  display: inline-block;
+  max-width: fit-content;
+}
+
+.button:disabled,
+.button[aria-disabled="true"] {
+  background-color: var(--color-surface-variant);
+  color: var(--color-subtext);
+  cursor: not-allowed;
 }
 
 .input {
@@ -45,6 +58,10 @@
 .input:has(input),
 .input:has(select) {
   max-width: 320px;
+}
+
+.input.full {
+  max-width: 100%;
 }
 
 .input textarea {

@@ -1,7 +1,7 @@
 CREATE TABLE utilisateurs (
   id_utilisateur SERIAL PRIMARY KEY,
   email VARCHAR(50) NOT NULL,
-  mot_de_passe VARCHAR(50) NOT NULL,
+  mot_de_passe TEXT NOT NULL,
   pseudo VARCHAR(50) NOT NULL,
   date_creation TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
@@ -21,7 +21,7 @@ CREATE TABLE joueurs (
 );
 
 CREATE TABLE sessions (
-  id_session SERIAL PRIMARY KEY,
+  id_session TEXT PRIMARY KEY,
   expires TIMESTAMP NOT NULL,
   id_utilisateur INT NOT NULL,
   FOREIGN KEY (id_utilisateur) REFERENCES utilisateurs(id_utilisateur)

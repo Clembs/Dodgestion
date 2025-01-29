@@ -3,11 +3,17 @@ require_once __DIR__ . '/../models/rencontre.php';
 require_once __DIR__ . '/../models/joueur.php';
 require_once __DIR__ . '/../models/participation.php';
 require_once __DIR__ . '/../helpers/validation.php';
+require_once __DIR__ . '/../models/session.php';
 
 class ControleurMatches
 {
   public static function matchInfo(?string $matchId, string $currentTab, array $erreurs)
   {
+    if (!Session::isLoggedIn()) {
+      header('Location: /?page=connexion');
+      return;
+    }
+
     // On récupère les rencontres
     $rencontres = Rencontre::getRencontres();
 
