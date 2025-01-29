@@ -10,7 +10,7 @@ $estPassee = $rencontreSelectionnee->getDate() <= new DateTime() || $rencontreSe
 
 <?php ob_start(); ?>
 
-<h3>Modifier les participants</h3>
+<h3>Modifier les participants (<?= count($participants) ?> participants sur 10) </h3>
 
 <table>
   <thead>
@@ -30,59 +30,80 @@ $estPassee = $rencontreSelectionnee->getDate() <= new DateTime() || $rencontreSe
     <?php foreach ($participants as $participant): ?>
       <?php $formId = "form-{$participant->getId()}"; ?>
 
-      <form action="/submit.php/?form=modifier-participant&match=TODO" method="post" id="<?= $formId ?>">
+      <form action="/submit.php/?form=modifier-participant&participant=<?= $participant->getId() ?>" method="post"
+        id="<?= $formId ?>">
       </form>
       <tr>
         <td><?= $participant->getJoueur()->getPrenom() ?>   <?= $participant->getJoueur()->getNom() ?></td>
         <td>
-          <select name="position" id="position" form="<?= $formId ?>">
-            <?php foreach (PositionJoueur::cases() as $position): ?>
-              <option value="<?= $position->value ?>" <?= $participant->getPosition() === $position ? 'selected' : '' ?>>
-                <?= match ($position) {
-                  PositionJoueur::AVANT => 'Avant',
-                  PositionJoueur::ARRIERE => 'Arrière',
-                } ?>
-              </option>
-            <?php endforeach; ?>
-          </select>
+          <?php if ($estPassee): ?>
+            <?= match ($participant->getPosition()) {
+              PositionJoueur::AVANT => 'Avant',
+              PositionJoueur::ARRIERE => 'Arrière',
+            } ?>
+          <?php else: ?>
+            <select name="position" id="position" form="<?= $formId ?>">
+              <?php foreach (PositionJoueur::cases() as $position): ?>
+                <option value="<?= $position->value ?>" <?= $participant->getPosition() === $position ? 'selected' : '' ?>>
+                  <?= match ($position) {
+                    PositionJoueur::AVANT => 'Avant',
+                    PositionJoueur::ARRIERE => 'Arrière',
+                  } ?>
+                </option>
+              <?php endforeach; ?>
+            </select>
+          <?php endif; ?>
         </td>
         <td>
-          <select name="role" id="role" form="<?= $formId ?>">
-            <?php foreach (RoleJoueur::cases() as $role): ?>
-              <option value="<?= $role->value ?>" <?= $participant->getRoleJoueur() === $role ? 'selected' : '' ?>>
-                <?= match ($role) {
-                  RoleJoueur::TITULAIRE => 'Titulaire',
-                  RoleJoueur::REMPLACANT => 'Remplaçant',
-                } ?>
-              </option>
-            <?php endforeach; ?>
-          </select>
+          <?php if ($estPassee): ?>
+            <?= match ($participant->getRoleJoueur()) {
+              RoleJoueur::TITULAIRE => 'Titulaire',
+              RoleJoueur::REMPLACANT => 'Remplaçant',
+            } ?>
+          <?php else: ?>
+            <select name="role" id="role" form="<?= $formId ?>">
+              <?php foreach (RoleJoueur::cases() as $role): ?>
+                <option value="<?= $role->value ?>" <?= $participant->getRoleJoueur() === $role ? 'selected' : '' ?>>
+                  <?= match ($role) {
+                    RoleJoueur::TITULAIRE => 'Titulaire',
+                    RoleJoueur::REMPLACANT => 'Remplaçant',
+                  } ?>
+                </option>
+              <?php endforeach; ?>
+            </select>
+          <?php endif; ?>
         </td>
 
         <?php if ($estPassee): ?>
           <td>
-            <input type="number" name="note" id="note" min="0" max="5">
+            <label class="input">
+              <input type="number" name="note" id="note" min="0" max="5" value="<?= $participant->getNote() ?>">
+            </label>
           </td>
           <td>
-            <input type="text" name="commentaire" id="commentaire">
+            <label class="input">
+              <textarea name="commentaire" id="commentaire" minlength="200"><?= $participant->getCommentaire() ?></textarea>
+            </label>
           </td>
         <?php endif; ?>
 
         <td>
           <div class="buttons">
             <button class="button primary inline" type="submit" form="<?= $formId ?>">Enregistrer</button>
-            <a href="/submit.php/?form=supprimer-participant&match=<?= $rencontreSelectionnee->getId() ?>&participant=<?= $participant->getId() ?>"
-              class="button danger inline icon" aria-label="Supprimer le participant">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                class="lucide lucide-trash-2">
-                <path d="M3 6h18" />
-                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                <line x1="10" x2="10" y1="11" y2="17" />
-                <line x1="14" x2="14" y1="11" y2="17" />
-              </svg>
-            </a>
+
+            <form action="/submit.php/?form=supprimer-participant&participant=<?= $participant->getId() ?>" method="POST">
+              <button type="submit" class="button danger inline icon" aria-label="Supprimer le participant">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                  class="lucide lucide-trash-2">
+                  <path d="M3 6h18" />
+                  <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                  <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                  <line x1="10" x2="10" y1="11" y2="17" />
+                  <line x1="14" x2="14" y1="11" y2="17" />
+                </svg>
+              </button>
+            </form>
           </div>
         </td>
 
@@ -91,7 +112,7 @@ $estPassee = $rencontreSelectionnee->getDate() <= new DateTime() || $rencontreSe
   </tbody>
 </table>
 
-<?php if (!$estPassee): ?>
+<?php if (!$estPassee || count($participants) >= 10): ?>
   <form action="/submit.php/?form=ajouter-participant&match=<?= $rencontreSelectionnee->getId() ?>" method="post">
 
     <div class="ajouter">

@@ -185,16 +185,21 @@ class Participation
     }
   }
 
-  public static function read(int $id): Participation
+  public static function read(int $id): ?Participation
   {
     try {
       $linkpdo = Database::getPDO();
       $req = $linkpdo->prepare('SELECT * FROM participations WHERE id_participation = :id');
       $req->execute(['id' => $id]);
       $res = $req->fetch(PDO::FETCH_ASSOC);
+
+      if (!$res) {
+        return null;
+      }
+
       return new Participation(
         $res['id_participation'],
-        Joueur::findByNumeroLicense($res['id_joueur']),
+        Joueur::read($res['id_joueur']),
         Rencontre::read($res['id_rencontre']),
         $res['note'],
         $res['commentaire'],

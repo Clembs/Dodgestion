@@ -307,4 +307,27 @@ class ControleurMatches
 
     header("Location: /?page=matches&match=$matchId&tab=joueurs");
   }
+
+  public static function supprimerParticipation(string $participantId)
+  {
+    if (!isset($participantId)) {
+      require __DIR__ . '/../views/404.php';
+      return;
+    }
+
+    // On récupère la participation
+    $participation = Participation::read($participantId);
+
+    if ($participation === null) {
+      // Si la participation n'existe pas, on affiche une page 404
+      require __DIR__ . '/../views/404.php';
+      return;
+    }
+
+    // On supprime la participation
+    $participation->delete();
+
+    // On redirige vers la page des matches
+    header('Location: /?page=matches&match=' . $participation->getRencontre()->getId() . '&tab=joueurs');
+  }
 }
